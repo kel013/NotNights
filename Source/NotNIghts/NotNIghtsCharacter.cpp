@@ -10,6 +10,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "PathSpline.h"
+#include <Kismet/GameplayStatics.h>
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -52,6 +54,12 @@ ANotNIghtsCharacter::ANotNIghtsCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	//AActor* PathSpline = UGameplayStatics::GetActorOfClass(GetWorld(), APathSpline::StaticClass());
+
+	//SplinePath = PathSpline->GetComponentByClass<USplineComponent>();
+
+	//SetActorLocation(SplinePath->FindLocationClosestToWorldLocation(GetActorLocation(), ESplineCoordinateSpace::World));
 }
 
 void ANotNIghtsCharacter::BeginPlay()
@@ -109,10 +117,10 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 		const FVector UpDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Z);
 	
 		// get right vector 
-		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		//const FVector RightDirection = SplinePath->FindDirectionClosestToWorldLocation(GetActorLocation(), ESplineCoordinateSpace::World);
 
 		// add movement 
 		AddMovementInput(UpDirection, MovementVector.Y);
-		AddMovementInput(RightDirection, MovementVector.X);
+		//AddMovementInput(RightDirection, MovementVector.X);
 	}
 }

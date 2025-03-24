@@ -3,9 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/SplineComponent.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "Components/SplineComponent.h"
 #include "NotNIghtsCharacter.generated.h"
 
 class USpringArmComponent;
@@ -37,9 +37,9 @@ class ANotNIghtsCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 
-	/** Pathing with Spline */
-	UPROPERTY(EditAnywhere)
-	AActor* Path;
+	/** Move Input Action */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	USplineComponent* SplinePath;
 
 public:
 	ANotNIghtsCharacter();
