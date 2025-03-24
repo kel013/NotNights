@@ -55,15 +55,21 @@ ANotNIghtsCharacter::ANotNIghtsCharacter()
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 
-	//AActor* PathSpline = UGameplayStatics::GetActorOfClass(GetWorld(), APathSpline::StaticClass());
-
-	//SplinePath = PathSpline->GetComponentByClass<USplineComponent>();
-
-	//SetActorLocation(SplinePath->FindLocationClosestToWorldLocation(GetActorLocation(), ESplineCoordinateSpace::World));
 }
 
 void ANotNIghtsCharacter::BeginPlay()
 {
+	AActor* PathSpline = UGameplayStatics::GetActorOfClass(GetWorld(), APathSpline::StaticClass());
+
+	if (PathSpline)
+	{
+		SplinePath = PathSpline->GetComponentByClass<USplineComponent>();
+		if (SplinePath)
+		{
+			//SetActorLocation(SplinePath->FindLocationClosestToWorldLocation(GetActorLocation(), ESplineCoordinateSpace::World));
+			SetActorLocation(FVector(), ESplineCoordinateSpace::World);
+		}
+	}
 	Super::BeginPlay();
 }
 
@@ -117,10 +123,10 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 		const FVector UpDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Z);
 	
 		// get right vector 
-		//const FVector RightDirection = SplinePath->FindDirectionClosestToWorldLocation(GetActorLocation(), ESplineCoordinateSpace::World);
+		const FVector RightDirection = SplinePath->FindDirectionClosestToWorldLocation(GetActorLocation(), ESplineCoordinateSpace::World);
 
 		// add movement 
 		AddMovementInput(UpDirection, MovementVector.Y);
-		//AddMovementInput(RightDirection, MovementVector.X);
+		AddMovementInput(RightDirection, MovementVector.X);
 	}
 }
