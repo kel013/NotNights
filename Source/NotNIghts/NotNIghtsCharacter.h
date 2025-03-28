@@ -38,11 +38,13 @@ class ANotNIghtsCharacter : public ACharacter
 	UInputAction* MoveAction;
 
 	/** Move Input Action */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	USplineComponent* SplinePath;
 
 public:
 	ANotNIghtsCharacter();
+
+	virtual void Tick(float DeltaTime) override;
 	
 
 protected:

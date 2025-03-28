@@ -66,11 +66,20 @@ void ANotNIghtsCharacter::BeginPlay()
 		SplinePath = PathSpline->GetComponentByClass<USplineComponent>();
 		if (SplinePath)
 		{
-			//SetActorLocation(SplinePath->FindLocationClosestToWorldLocation(GetActorLocation(), ESplineCoordinateSpace::World));
-			SetActorLocation(FVector(), ESplineCoordinateSpace::World);
+			SetActorLocation(SplinePath->FindLocationClosestToWorldLocation(GetActorLocation(), ESplineCoordinateSpace::World));
 		}
 	}
 	Super::BeginPlay();
+}
+
+// Called every frame
+void ANotNIghtsCharacter::Tick(float DeltaTime)
+{
+	if (SplinePath)
+	{
+		SetActorLocation(SplinePath->FindLocationClosestToWorldLocation(GetActorLocation(), ESplineCoordinateSpace::World));
+	}
+	Super::Tick(DeltaTime);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -123,7 +132,7 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 		const FVector UpDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Z);
 	
 		// get right vector 
-		const FVector RightDirection = SplinePath->FindDirectionClosestToWorldLocation(GetActorLocation(), ESplineCoordinateSpace::World);
+		const FVector RightDirection = SplinePath ? SplinePath->FindDirectionClosestToWorldLocation(GetActorLocation(), ESplineCoordinateSpace::World) : FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);;
 
 		// add movement 
 		AddMovementInput(UpDirection, MovementVector.Y);
