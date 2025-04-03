@@ -45,7 +45,7 @@ ANotNIghtsCharacter::ANotNIghtsCharacter()
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
-	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+	CameraBoom->bUsePawnControlRotation = false; // Rotate the arm based on the controller
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
@@ -66,7 +66,9 @@ void ANotNIghtsCharacter::BeginPlay()
 		SplinePath = PathSpline->GetComponentByClass<USplineComponent>();
 		if (SplinePath)
 		{
-			SetActorLocation(SplinePath->FindLocationClosestToWorldLocation(GetActorLocation(), ESplineCoordinateSpace::World));
+			float SplineInput = SplinePath->FindInputKeyClosestToWorldLocation(GetActorLocation());
+			CurrentSplineInputKey = SplineInput;
+			SetActorLocation(SplinePath->GetLocationAtSplineInputKey(SplineInput, ESplineCoordinateSpace::World));
 		}
 	}
 	Super::BeginPlay();
@@ -75,11 +77,24 @@ void ANotNIghtsCharacter::BeginPlay()
 // Called every frame
 void ANotNIghtsCharacter::Tick(float DeltaTime)
 {
+	Super::Tick(DeltaTime);
 	if (SplinePath)
 	{
-		SetActorLocation(SplinePath->FindLocationClosestToWorldLocation(GetActorLocation(), ESplineCoordinateSpace::World));
+		FVector SearchFrom = GetActorLocation();
+
+		//Utilize the Z value of the previous location to get the most accurate result
+		SearchFrom.Z = SplinePath->GetLocationAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World).Z;
+
+		CurrentSplineInputKey = SplinePath->FindInputKeyClosestToWorldLocation(SearchFrom);
+
+		FVector SplineLoc = SplinePath->GetLocationAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
+
+		SplineLoc.Z = GetActorLocation().Z;
+		SetActorLocation(SplineLoc);
+		
+		//FQuat CameraRotation = SplinePath->GetQuaternionAtDistanceAlongSpline(CurrentDistance, ESplineCoordinateSpace::World);
+		//CameraBoom->SetWorldRotation(CameraRotation);
 	}
-	Super::Tick(DeltaTime);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -130,12 +145,20 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 
 		// get up vector
 		const FVector UpDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Z);
-	
+
 		// get right vector 
-		const FVector RightDirection = SplinePath ? SplinePath->FindDirectionClosestToWorldLocation(GetActorLocation(), ESplineCoordinateSpace::World) : FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);;
+		const FVector RightDirection = SplinePath ? SplinePath->GetDirectionAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World) : FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+		//FVector CurrentDirection = CurrentDirection;
+
+		FVector GoalDirection = (UpDirection * MovementVector.Y) + (RightDirection * MovementVector.X);
+		GoalDirection.Normalize();
+
+		//FVector NewDirection = FMath::Lerp()
 
 		// add movement 
-		AddMovementInput(UpDirection, MovementVector.Y);
-		AddMovementInput(RightDirection, MovementVector.X);
+		AddMovementInput(GoalDirection, MovementVector.Length());
+		//AddMovementInput(UpDirection, MovementVector.Y);
+		//AddMovementInput(RightDirection, MovementVector.X);
 	}
 }
