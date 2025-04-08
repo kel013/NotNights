@@ -12,6 +12,7 @@
 #include "InputActionValue.h"
 #include "PathSpline.h"
 #include <Kismet/GameplayStatics.h>
+#include <Kismet/KismetMathLibrary.h>
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -69,6 +70,8 @@ void ANotNIghtsCharacter::BeginPlay()
 			float SplineInput = SplinePath->FindInputKeyClosestToWorldLocation(GetActorLocation());
 			CurrentSplineInputKey = SplineInput;
 			SetActorLocation(SplinePath->GetLocationAtSplineInputKey(SplineInput, ESplineCoordinateSpace::World));
+			FVector RightVector = SplinePath->GetRightVectorAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World) * -1;
+			CameraBoom->SetWorldRotation(RightVector.Rotation().Quaternion());
 		}
 	}
 	Super::BeginPlay();
@@ -137,7 +140,7 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
-	if (Controller != nullptr)
+	if (Controller != nullptr && SplinePath)
 	{
 		// find out which way is up
 		const FRotator Rotation = Controller->GetControlRotation();
@@ -147,14 +150,30 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 		const FVector UpDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Z);
 
 		// get right vector 
-		const FVector RightDirection = SplinePath ? SplinePath->GetDirectionAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World) : FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		const FVector ForwardDirection = SplinePath->GetDirectionAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
 
-		//FVector CurrentDirection = CurrentDirection;
+		const FVector RightVector = SplinePath->GetRightVectorAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
 
-		FVector GoalDirection = (UpDirection * MovementVector.Y) + (RightDirection * MovementVector.X);
+		FVector CurrentDirection = GetActorForwardVector();
+
+		FVector2D CurrentAlign;
+
+		CurrentAlign.X = FVector::DotProduct(CurrentDirection, ForwardDirection);
+		CurrentAlign.Y = FVector::DotProduct(CurrentDirection, UpDirection);
+
+		CurrentAlign.Normalize();
+
+		FVector2D NewDirection = FMath::Vector2DInterpConstantTo(CurrentAlign, MovementVector, FApp::GetDeltaTime(), RotationSpeed);
+
+		FVector GoalDirection = (UpDirection * NewDirection.Y) + (ForwardDirection * NewDirection.X);
 		GoalDirection.Normalize();
 
-		//FVector NewDirection = FMath::Lerp()
+		FRotator MovementRotation = UKismetMathLibrary::MakeRotFromYX(RightVector, GoalDirection);
+
+		SetActorRotation(MovementRotation.Quaternion());
+
+		DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + (GoalDirection * 100), FColor::Purple, false, 0.0F, (uint8)0U, 10.0F);
+		//DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + (NewDirection * 100), FColor::Red,false,0.0F,(uint8)0U,10.0F);
 
 		// add movement 
 		AddMovementInput(GoalDirection, MovementVector.Length());
