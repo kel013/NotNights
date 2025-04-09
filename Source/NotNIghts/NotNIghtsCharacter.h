@@ -37,14 +37,11 @@ class ANotNIghtsCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 
-	/** Move Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	USplineComponent* SplinePath;
-
 	float CurrentSplineInputKey;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	float RotationSpeed{ 120.0f };
+	float RotationSpeed{ 180.0f };
 
 public:
 	ANotNIghtsCharacter();

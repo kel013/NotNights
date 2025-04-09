@@ -70,6 +70,7 @@ void ANotNIghtsCharacter::BeginPlay()
 			float SplineInput = SplinePath->FindInputKeyClosestToWorldLocation(GetActorLocation());
 			CurrentSplineInputKey = SplineInput;
 			SetActorLocation(SplinePath->GetLocationAtSplineInputKey(SplineInput, ESplineCoordinateSpace::World));
+			SetActorRotation(SplinePath->GetDirectionAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World).Rotation().Quaternion());
 			FVector RightVector = SplinePath->GetRightVectorAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World) * -1;
 			CameraBoom->SetWorldRotation(RightVector.Rotation().Quaternion());
 		}
@@ -164,15 +165,10 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 
 		CurrentAlign.Normalize();
 
-		//FVector2D NewDirection = FMath::Vector2DInterpConstantTo(CurrentAlign, MovementVector, FApp::GetDeltaTime(), RotationSpeed);
-
 		FVector GoalDirection = (UpDirection * MovementVector.Y) + (ForwardDirection * MovementVector.X);
-
-		//FVector CurrentAlignedDirection = (UpDirection * CurrentAlign.Y) + (ForwardDirection * CurrentAlign.X);
 
 		if ((CurrentAlign + MovementVector).IsZero())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Opposite vectors"));
 			GoalDirection += UpDirection;
 		}
 
@@ -189,7 +185,5 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 
 		// add movement 
 		AddMovementInput(MoveDirection, MovementVector.Length());
-		//AddMovementInput(UpDirection, MovementVector.Y);
-		//AddMovementInput(RightDirection, MovementVector.X);
 	}
 }
