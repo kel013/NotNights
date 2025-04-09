@@ -155,7 +155,8 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 		const FVector RightVector = SplinePath->GetRightVectorAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
 
 		FVector CurrentDirection = GetActorForwardVector();
-
+		CurrentDirection.Normalize();
+		
 		FVector2D CurrentAlign;
 
 		CurrentAlign.X = FVector::DotProduct(CurrentDirection, ForwardDirection);
@@ -163,20 +164,31 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 
 		CurrentAlign.Normalize();
 
-		FVector2D NewDirection = FMath::Vector2DInterpConstantTo(CurrentAlign, MovementVector, FApp::GetDeltaTime(), RotationSpeed);
+		//FVector2D NewDirection = FMath::Vector2DInterpConstantTo(CurrentAlign, MovementVector, FApp::GetDeltaTime(), RotationSpeed);
 
-		FVector GoalDirection = (UpDirection * NewDirection.Y) + (ForwardDirection * NewDirection.X);
+		FVector GoalDirection = (UpDirection * MovementVector.Y) + (ForwardDirection * MovementVector.X);
+
+		//FVector CurrentAlignedDirection = (UpDirection * CurrentAlign.Y) + (ForwardDirection * CurrentAlign.X);
+
+		if ((CurrentAlign + MovementVector).IsZero())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Opposite vectors"));
+			GoalDirection += UpDirection;
+		}
+
 		GoalDirection.Normalize();
 
-		FRotator MovementRotation = UKismetMathLibrary::MakeRotFromYX(RightVector, GoalDirection);
+		FVector MoveDirection = FMath::VInterpNormalRotationTo(CurrentDirection,GoalDirection,FApp::GetDeltaTime(), RotationSpeed);
+
+		FRotator MovementRotation = UKismetMathLibrary::MakeRotFromYX(RightVector, MoveDirection);
 
 		SetActorRotation(MovementRotation.Quaternion());
 
 		DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + (GoalDirection * 100), FColor::Purple, false, 0.0F, (uint8)0U, 10.0F);
-		//DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + (NewDirection * 100), FColor::Red,false,0.0F,(uint8)0U,10.0F);
+		DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + (MoveDirection * 100), FColor::Red,false,0.0F,(uint8)0U,10.0F);
 
 		// add movement 
-		AddMovementInput(GoalDirection, MovementVector.Length());
+		AddMovementInput(MoveDirection, MovementVector.Length());
 		//AddMovementInput(UpDirection, MovementVector.Y);
 		//AddMovementInput(RightDirection, MovementVector.X);
 	}

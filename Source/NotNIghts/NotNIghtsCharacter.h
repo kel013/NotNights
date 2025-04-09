@@ -44,7 +44,7 @@ class ANotNIghtsCharacter : public ACharacter
 	float CurrentSplineInputKey;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	float RotationSpeed{ 10.0f };
+	float RotationSpeed{ 120.0f };
 
 public:
 	ANotNIghtsCharacter();
