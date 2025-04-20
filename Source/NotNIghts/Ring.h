@@ -23,9 +23,18 @@ class NOTNIGHTS_API ARing : public AActor
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ring Mesh", meta = (AllowPrivateAccess = "true"))
 	TArray<UStaticMeshComponent*> RingStaticMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ring Mesh", meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* CenterRing;
 public:	
 	// Sets default values for this actor's properties
 	ARing();
+	void OnConstruction(const FTransform& Transform) override;
+	/*
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
+*/
 
 protected:
 	// Called when the game starts or when spawned
@@ -34,5 +43,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+private:
+	void SetUpRingObjects();
 
 };
