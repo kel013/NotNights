@@ -17,15 +17,18 @@ ARing::ARing()
 		}
 	}
 
-	CenterRing = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Center"));
-
-	CenterRing->SetupAttachment(RootComponent);
-	CenterRing->SetStaticMesh(RingMesh);
+	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollider"));
+	BoxComponent->InitBoxExtent(FVector(20.0f, 500.0f, 500.0f));
+	RootComponent = BoxComponent;
 }
 
 void ARing::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
+	if (BoxComponent)
+	{
+		BoxComponent->SetBoxExtent(FVector(20.0f, Radius, Radius));
+	}
 	for (UStaticMeshComponent* MeshComponent : RingStaticMesh)
 	{
 		if (MeshComponent)
@@ -49,32 +52,18 @@ void ARing::SetUpRingObjects()
 
 		RingStaticMeshComponent = NewObject<UStaticMeshComponent>(this, UStaticMeshComponent::StaticClass(), MeshName);
 
-		RingStaticMeshComponent->SetupAttachment(CenterRing);
+		RingStaticMeshComponent->SetupAttachment(RootComponent);
 		RingStaticMeshComponent->SetStaticMesh(RingMesh);
 		RingStaticMeshComponent->RegisterComponent();
 
 		FVector Location = FVector::UpVector * Radius;
 		Location = Location.RotateAngleAxis(Degree * x, FVector::ForwardVector);
 
-		RingStaticMeshComponent->SetRelativeLocation(Location);
+		RingStaticMeshComponent->SetWorldLocation(Location);
 		RingStaticMesh.Emplace(RingStaticMeshComponent);
 	}
 }
-/*
-#if WITH_EDITOR
-void ARing::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
-{
-	Super::PostEditChangeProperty(PropertyChangedEvent);
-	for (UStaticMeshComponent* MeshComponent : RingStaticMesh)
-	{
-		MeshComponent->DestroyComponent();
-	}
-	RingStaticMesh.Empty();
 
-	//SetUpRingObjects(true);
-}
-#endif
-*/
 // Called when the game starts or when spawned
 void ARing::BeginPlay()
 {
