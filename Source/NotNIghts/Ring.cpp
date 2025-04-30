@@ -3,6 +3,8 @@
 
 #include "Ring.h"
 
+#include "NotNIghtsCharacter.h"
+
 // Sets default values
 ARing::ARing()
 {
@@ -20,6 +22,8 @@ ARing::ARing()
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollider"));
 	BoxComponent->InitBoxExtent(FVector(20.0f, 500.0f, 500.0f));
 	RootComponent = BoxComponent;
+
+	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ARing::OnOverlap);
 }
 
 void ARing::OnConstruction(const FTransform& Transform)
@@ -38,6 +42,14 @@ void ARing::OnConstruction(const FTransform& Transform)
 	}
 	RingStaticMesh.Empty();
 	SetUpRingObjects();
+}
+
+bool ARing::OnDirectCollect()
+{
+	SetActorEnableCollision(false);
+	SetActorHiddenInGame(true);
+	SetActorTickEnabled(false);
+	return true;
 }
 
 void ARing::SetUpRingObjects()
@@ -69,6 +81,14 @@ void ARing::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void ARing::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor->IsA(ANotNIghtsCharacter::StaticClass()))
+	{
+		OnDirectCollect();
+	}
 }
 
 // Called every frame
