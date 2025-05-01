@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Collectible.h"
-#include <Components/BoxComponent.h>
+#include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/Actor.h"
 #include "Ring.generated.h"

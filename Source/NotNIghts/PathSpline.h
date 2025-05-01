@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/SplineComponent.h"
 #include "GameFramework/Actor.h"
 #include "PathSpline.generated.h"
 
@@ -10,6 +11,9 @@ UCLASS()
 class NOTNIGHTS_API APathSpline : public AActor
 {
 	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ring Mesh", meta = (AllowPrivateAccess = "true"))
+	USplineComponent* Spline;
 	
 public:	
 	// Sets default values for this actor's properties
