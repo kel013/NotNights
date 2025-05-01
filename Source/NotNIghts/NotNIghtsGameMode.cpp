@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "NotNIghtsGameMode.h"
+#include "NotNightsGameState.h"
 #include "NotNIghtsCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -12,4 +13,6 @@ ANotNIghtsGameMode::ANotNIghtsGameMode()
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+
+	GameStateClass = ANotNightsGameState::StaticClass();
 }

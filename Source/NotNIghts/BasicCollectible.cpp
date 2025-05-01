@@ -24,6 +24,14 @@ void ABasicCollectible::BeginPlay()
 	
 }
 
+bool ABasicCollectible::OnDirectCollect()
+{
+	SetActorEnableCollision(false);
+	SetActorHiddenInGame(true);
+	SetActorTickEnabled(false);
+	return true;
+}
+
 void ABasicCollectible::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor->IsA(ANotNIghtsCharacter::StaticClass()))
