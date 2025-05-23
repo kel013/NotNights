@@ -20,10 +20,16 @@ class NOTNIGHTS_API ARing : public AActor, public ICollectible
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float Radius{ 500.0f };
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	float BoxThickness{ 5.0f };
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ring Mesh", meta = (AllowPrivateAccess = "true"))
 	UStaticMesh* RingMesh;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ring Mesh", meta = (AllowPrivateAccess = "true"))
+	float MeshScale{ 1.0f };
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ring Mesh", meta = (AllowPrivateAccess = "true"))
 	TArray<UStaticMeshComponent*> RingStaticMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

@@ -20,8 +20,8 @@ ARing::ARing()
 	}
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollider"));
-	BoxComponent->InitBoxExtent(FVector(20.0f, 500.0f, 500.0f));
-	RootComponent = BoxComponent;
+	BoxComponent->InitBoxExtent(FVector(BoxThickness, 500.0f, 500.0f));
+	SetRootComponent(BoxComponent);
 
 	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ARing::OnOverlap);
 }
@@ -31,7 +31,7 @@ void ARing::OnConstruction(const FTransform& Transform)
 	Super::OnConstruction(Transform);
 	if (BoxComponent)
 	{
-		BoxComponent->SetBoxExtent(FVector(20.0f, Radius, Radius));
+		BoxComponent->SetBoxExtent(FVector(BoxThickness, Radius, Radius));
 	}
 	for (UStaticMeshComponent* MeshComponent : RingStaticMesh)
 	{
@@ -64,14 +64,14 @@ void ARing::SetUpRingObjects()
 
 		RingStaticMeshComponent = NewObject<UStaticMeshComponent>(this, UStaticMeshComponent::StaticClass(), MeshName);
 
-		RingStaticMeshComponent->SetupAttachment(RootComponent);
-		RingStaticMeshComponent->SetStaticMesh(RingMesh);
 		RingStaticMeshComponent->RegisterComponent();
+		RingStaticMeshComponent->SetStaticMesh(RingMesh);
+		RingStaticMeshComponent->AttachToComponent(BoxComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
+		RingStaticMeshComponent->SetRelativeScale3D(FVector(MeshScale, MeshScale, MeshScale));
 		FVector Location = FVector::UpVector * Radius;
 		Location = Location.RotateAngleAxis(Degree * x, FVector::ForwardVector);
-
-		RingStaticMeshComponent->SetWorldLocation(Location);
+		RingStaticMeshComponent->SetRelativeLocation(Location);
 		RingStaticMesh.Emplace(RingStaticMeshComponent);
 	}
 }
