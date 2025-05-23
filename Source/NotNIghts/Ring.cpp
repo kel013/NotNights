@@ -67,6 +67,7 @@ void ARing::SetUpRingObjects()
 		RingStaticMeshComponent->RegisterComponent();
 		RingStaticMeshComponent->SetStaticMesh(RingMesh);
 		RingStaticMeshComponent->AttachToComponent(BoxComponent, FAttachmentTransformRules::KeepRelativeTransform);
+		RingStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 		RingStaticMeshComponent->SetRelativeScale3D(FVector(MeshScale, MeshScale, MeshScale));
 		FVector Location = FVector::UpVector * Radius;
