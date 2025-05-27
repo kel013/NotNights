@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "Components/SplineComponent.h"
+#include "Containers/Deque.h"
 #include "NotNIghtsCharacter.generated.h"
 
 class USpringArmComponent;
@@ -37,11 +38,13 @@ class ANotNIghtsCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 
-	USplineComponent* SplinePath;
-	float CurrentSplineInputKey;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float RotationSpeed{ 180.0f };
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	int MaxLinePathPoints{ 10 };
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	float SecondsBetweenPathPoints{ 0.1 };
 
 public:
 	ANotNIghtsCharacter();
@@ -68,5 +71,15 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+private:
+	bool DetectCircleDrawn(TArray<FVector>& out_DrawnCirclePoints);
+	void GetAllObjectsInLoop(TArray<FVector>& CirclePoints, TArray<AActor*> out_Actors);
+
+	USplineComponent* SplinePath;
+	float CurrentSplineInputKey;
+
+	float SecondsFromLastPathRecord{ 0.0f };
+	TDeque<FVector> LinePathPoints;
 };
 

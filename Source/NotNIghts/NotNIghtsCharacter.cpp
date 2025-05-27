@@ -11,8 +11,10 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "PathSpline.h"
+#include "BasicCollectible.h"
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetMathLibrary.h>
+#include <Kismet/KismetSystemLibrary.h>
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -75,6 +77,8 @@ void ANotNIghtsCharacter::BeginPlay()
 			CameraBoom->SetWorldRotation(RightVector.Rotation().Quaternion());
 		}
 	}
+
+	LinePathPoints.Reserve(MaxLinePathPoints + 1);
 	Super::BeginPlay();
 }
 
@@ -98,6 +102,24 @@ void ANotNIghtsCharacter::Tick(float DeltaTime)
 		
 		FVector RightVector = SplinePath->GetRightVectorAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World) * -1;
 		CameraBoom->SetWorldRotation(RightVector.Rotation().Quaternion());
+	}
+
+	SecondsFromLastPathRecord += DeltaTime;
+	if (SecondsFromLastPathRecord >= SecondsBetweenPathPoints)
+	{
+		if (LinePathPoints.Num() >= MaxLinePathPoints)
+		{
+			LinePathPoints.PopLast();
+		}
+		FVector CurrentLocation = GetActorLocation();
+		LinePathPoints.PushFirst(CurrentLocation);
+		TArray<FVector> CirclePoints;
+		CirclePoints.Reserve(LinePathPoints.Num());
+		if (DetectCircleDrawn(CirclePoints))
+		{
+			TArray<AActor*> CircledCollectibles;
+			GetAllObjectsInLoop(CirclePoints, CircledCollectibles);
+		}
 	}
 }
 
@@ -186,4 +208,47 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 		// add movement 
 		AddMovementInput(MoveDirection, MovementVector.Length());
 	}
+}
+
+bool ANotNIghtsCharacter::DetectCircleDrawn(TArray<FVector>& out_DrawnCirclePoints)
+{
+	const FVector& LatestPoint = *(LinePathPoints.begin());
+	const FVector& LatestPoint2 = *(LinePathPoints.begin()++);
+	auto ExamineVector = LinePathPoints.begin()++;
+
+	while (ExamineVector ++ != LinePathPoints.end())
+	{
+		out_DrawnCirclePoints.Add(*ExamineVector);
+		FVector Connection;
+		if (FMath::SegmentIntersection2D(LatestPoint, LatestPoint2, *ExamineVector, *(ExamineVector++), Connection))
+		{
+			out_DrawnCirclePoints.Add(Connection);
+			return true;
+		}
+		ExamineVector++;
+	}
+	return false;
+}
+
+void ANotNIghtsCharacter::GetAllObjectsInLoop(TArray<FVector>& CirclePoints, TArray<AActor*> out_Actors)
+{
+	FVector Center = FVector::Zero();
+	for (const FVector& Vector : CirclePoints)
+	{
+		Center += Vector;
+	}
+	Center /= CirclePoints.Num();
+	float Radius = 0.0f;
+	for (const FVector& Vector : CirclePoints)
+	{
+		float Distance = (Vector - Center).Length();
+		if (Distance > Radius)
+		{
+			Radius = Distance;
+		}
+	}
+	TArray<TEnumAsByte < EObjectTypeQuery >>m_objectTypes;
+	m_objectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+
+	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), Center, Radius, m_objectTypes, ABasicCollectible::StaticClass(), TArray<AActor*>(), out_Actors);
 }
