@@ -119,6 +119,10 @@ void ANotNIghtsCharacter::Tick(float DeltaTime)
 		{
 			TArray<AActor*> CircledCollectibles;
 			GetAllObjectsInLoop(CirclePoints, CircledCollectibles);
+			for (AActor* Colle: CircledCollectibles)
+			{
+				Cast<ABasicCollectible>(Colle)->OnLoop();
+			}
 		}
 	}
 }
@@ -212,20 +216,24 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 
 bool ANotNIghtsCharacter::DetectCircleDrawn(TArray<FVector>& out_DrawnCirclePoints)
 {
-	const FVector& LatestPoint = *(LinePathPoints.begin());
-	const FVector& LatestPoint2 = *(LinePathPoints.begin()++);
-	auto ExamineVector = LinePathPoints.begin()++;
+	const FVector& LatestPoint = LinePathPoints.First();
+	const FVector& LatestPoint2 = LinePathPoints[1];
 
-	while (ExamineVector ++ != LinePathPoints.end())
+	for (int x = 1; x < LinePathPoints.Num(); x++)
 	{
-		out_DrawnCirclePoints.Add(*ExamineVector);
+		const FVector& ExaminePoint = LinePathPoints[x];
+		const FVector& ExaminePoint2 = LinePathPoints[x + 1];
+		if (ExaminePoint == ExaminePoint2)
+		{
+			continue;
+		}
+		out_DrawnCirclePoints.Add(LinePathPoints[x]);
 		FVector Connection;
-		if (FMath::SegmentIntersection2D(LatestPoint, LatestPoint2, *ExamineVector, *(ExamineVector++), Connection))
+		if (FMath::SegmentIntersection2D(LatestPoint, LatestPoint2, ExaminePoint, ExaminePoint2, Connection))
 		{
 			out_DrawnCirclePoints.Add(Connection);
 			return true;
 		}
-		ExamineVector++;
 	}
 	return false;
 }

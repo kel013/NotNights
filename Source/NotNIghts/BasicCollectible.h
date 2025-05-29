@@ -26,6 +26,8 @@ public:
 
 	virtual bool OnDirectCollect() override;
 
+	virtual bool OnLoop() override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
