@@ -44,7 +44,7 @@ class ANotNIghtsCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int MaxLinePathPoints{ 10 };
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	float SecondsBetweenPathPoints{ 0.1 };
+	float SecondsBetweenPathPoints{ 0.3 };
 
 public:
 	ANotNIghtsCharacter();

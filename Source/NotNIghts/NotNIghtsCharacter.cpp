@@ -104,6 +104,16 @@ void ANotNIghtsCharacter::Tick(float DeltaTime)
 		CameraBoom->SetWorldRotation(RightVector.Rotation().Quaternion());
 	}
 
+#if WITH_EDITOR
+	for (int x = 0; x < LinePathPoints.Num() - 1; x++)
+	{
+		const FVector& ExaminePoint = LinePathPoints[x];
+		const FVector& ExaminePoint2 = LinePathPoints[x + 1];
+
+		DrawDebugLine(GetWorld(), ExaminePoint, ExaminePoint2, FColor::Green, false, 0.0F, (uint8)0U, 10.0F);
+	}
+#endif
+
 	SecondsFromLastPathRecord += DeltaTime;
 	if (SecondsFromLastPathRecord >= SecondsBetweenPathPoints)
 	{
@@ -111,6 +121,7 @@ void ANotNIghtsCharacter::Tick(float DeltaTime)
 		{
 			LinePathPoints.PopLast();
 		}
+
 		FVector CurrentLocation = GetActorLocation();
 		LinePathPoints.PushFirst(CurrentLocation);
 		TArray<FVector> CirclePoints;
@@ -121,9 +132,11 @@ void ANotNIghtsCharacter::Tick(float DeltaTime)
 			GetAllObjectsInLoop(CirclePoints, CircledCollectibles);
 			for (AActor* Colle: CircledCollectibles)
 			{
+				UE_LOG(LogTemp, Display, TEXT("Looping %s"), *Colle->GetFName().ToString());
 				Cast<ABasicCollectible>(Colle)->OnLoop();
 			}
 		}
+		SecondsFromLastPathRecord = 0;
 	}
 }
 
@@ -216,13 +229,18 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 
 bool ANotNIghtsCharacter::DetectCircleDrawn(TArray<FVector>& out_DrawnCirclePoints)
 {
+	if (LinePathPoints.Num() < 2)
+	{
+		return false;
+	}
 	const FVector& LatestPoint = LinePathPoints.First();
 	const FVector& LatestPoint2 = LinePathPoints[1];
 
-	for (int x = 1; x < LinePathPoints.Num(); x++)
+	for (int x = 2; x < LinePathPoints.Num()-1; x++)
 	{
 		const FVector& ExaminePoint = LinePathPoints[x];
 		const FVector& ExaminePoint2 = LinePathPoints[x + 1];
+
 		if (ExaminePoint == ExaminePoint2)
 		{
 			continue;
@@ -231,6 +249,7 @@ bool ANotNIghtsCharacter::DetectCircleDrawn(TArray<FVector>& out_DrawnCirclePoin
 		FVector Connection;
 		if (FMath::SegmentIntersection2D(LatestPoint, LatestPoint2, ExaminePoint, ExaminePoint2, Connection))
 		{
+			UE_LOG(LogTemp, Display, TEXT("Segment Intersected"));
 			out_DrawnCirclePoints.Add(Connection);
 			return true;
 		}
