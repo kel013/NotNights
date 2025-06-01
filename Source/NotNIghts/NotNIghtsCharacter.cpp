@@ -227,6 +227,45 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
+bool ANotNIghtsCharacter::SegmentIntersection(const FVector& SegmentStartA, const FVector& SegmentEndA, const FVector& SegmentStartB, const FVector& SegmentEndB, FVector& out_IntersectionPoint)
+{
+	// find out which way is up
+	const FRotator Rotation = Controller->GetControlRotation();
+	const FRotator YawRotation(0, Rotation.Yaw, 0);
+	// get up vector
+	const FVector UpDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Z);
+
+	// get right vector 
+	const FVector ForwardDirection = SplinePath->GetDirectionAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
+
+	FVector SegmentStartA2D;
+
+	SegmentStartA2D.X = FVector::DotProduct(SegmentStartA, ForwardDirection);
+	SegmentStartA2D.Y = FVector::DotProduct(SegmentStartA, UpDirection);
+
+	FVector SegmentEndA2D;
+
+	SegmentEndA2D.X = FVector::DotProduct(SegmentEndA, ForwardDirection);
+	SegmentEndA2D.Y = FVector::DotProduct(SegmentEndA, UpDirection);
+
+	FVector SegmentStartB2D;
+
+	SegmentStartB2D.X = FVector::DotProduct(SegmentStartB, ForwardDirection);
+	SegmentStartB2D.Y = FVector::DotProduct(SegmentStartB, UpDirection);
+
+	FVector SegmentEndB2D;
+
+	SegmentEndB2D.X = FVector::DotProduct(SegmentEndB, ForwardDirection);
+	SegmentEndB2D.Y = FVector::DotProduct(SegmentEndB, UpDirection);
+
+	FVector Intersection2D;
+	bool Intersects = FMath::SegmentIntersection2D(SegmentStartA2D, SegmentEndA2D, SegmentStartB2D, SegmentEndB2D, Intersection2D);
+
+	out_IntersectionPoint = (Intersection2D.X * ForwardDirection) + (Intersection2D.Y * UpDirection);
+
+	return Intersects;
+}
+
 bool ANotNIghtsCharacter::DetectCircleDrawn(TArray<FVector>& out_DrawnCirclePoints)
 {
 	if (LinePathPoints.Num() < 2)
@@ -274,6 +313,7 @@ void ANotNIghtsCharacter::GetAllObjectsInLoop(TArray<FVector>& CirclePoints, TAr
 			Radius = Distance;
 		}
 	}
+	DrawDebugSphere(GetWorld(), Center, Radius, 12, FColor::Cyan, false, 1.0f, (uint8)0U, 10.0F);
 	TArray<TEnumAsByte < EObjectTypeQuery >>m_objectTypes;
 	m_objectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
 

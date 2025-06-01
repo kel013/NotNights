@@ -73,6 +73,7 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 private:
+	bool SegmentIntersection(const FVector& SegmentStartA, const FVector& SegmentEndA, const FVector& SegmentStartB, const FVector& SegmentEndB, FVector& out_IntersectionPoint);
 	bool DetectCircleDrawn(TArray<FVector>& out_DrawnCirclePoints);
 	void GetAllObjectsInLoop(TArray<FVector>& CirclePoints, TArray<AActor*> out_Actors);
 
