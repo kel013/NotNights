@@ -237,31 +237,32 @@ bool ANotNIghtsCharacter::SegmentIntersection(const FVector& SegmentStartA, cons
 
 	// get right vector 
 	const FVector ForwardDirection = SplinePath->GetDirectionAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
+	const FVector SplineLocation = SplinePath->GetLocationAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
 
 	FVector SegmentStartA2D;
 
-	SegmentStartA2D.X = FVector::DotProduct(SegmentStartA, ForwardDirection);
-	SegmentStartA2D.Y = FVector::DotProduct(SegmentStartA, UpDirection);
+	SegmentStartA2D.X = FVector::DotProduct(SegmentStartA- SplineLocation, ForwardDirection);
+	SegmentStartA2D.Y = FVector::DotProduct(SegmentStartA- SplineLocation, UpDirection);
 
 	FVector SegmentEndA2D;
 
-	SegmentEndA2D.X = FVector::DotProduct(SegmentEndA, ForwardDirection);
-	SegmentEndA2D.Y = FVector::DotProduct(SegmentEndA, UpDirection);
+	SegmentEndA2D.X = FVector::DotProduct(SegmentEndA- SplineLocation, ForwardDirection);
+	SegmentEndA2D.Y = FVector::DotProduct(SegmentEndA- SplineLocation, UpDirection);
 
 	FVector SegmentStartB2D;
 
-	SegmentStartB2D.X = FVector::DotProduct(SegmentStartB, ForwardDirection);
-	SegmentStartB2D.Y = FVector::DotProduct(SegmentStartB, UpDirection);
+	SegmentStartB2D.X = FVector::DotProduct(SegmentStartB- SplineLocation, ForwardDirection);
+	SegmentStartB2D.Y = FVector::DotProduct(SegmentStartB- SplineLocation, UpDirection);
 
 	FVector SegmentEndB2D;
 
-	SegmentEndB2D.X = FVector::DotProduct(SegmentEndB, ForwardDirection);
-	SegmentEndB2D.Y = FVector::DotProduct(SegmentEndB, UpDirection);
+	SegmentEndB2D.X = FVector::DotProduct(SegmentEndB- SplineLocation, ForwardDirection);
+	SegmentEndB2D.Y = FVector::DotProduct(SegmentEndB- SplineLocation, UpDirection);
 
 	FVector Intersection2D;
 	bool Intersects = FMath::SegmentIntersection2D(SegmentStartA2D, SegmentEndA2D, SegmentStartB2D, SegmentEndB2D, Intersection2D);
 
-	out_IntersectionPoint = (Intersection2D.X * ForwardDirection) + (Intersection2D.Y * UpDirection);
+	out_IntersectionPoint = (Intersection2D.X * ForwardDirection) + (Intersection2D.Y * UpDirection) + SplineLocation;
 
 	return Intersects;
 }
