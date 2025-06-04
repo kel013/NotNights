@@ -42,7 +42,7 @@ class ANotNIghtsCharacter : public ACharacter
 	float RotationSpeed{ 180.0f };
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	int MaxLinePathPoints{ 10 };
+	int MaxLinePathPoints{ 15 };
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float SecondsBetweenPathPoints{ 0.3 };
 
@@ -75,7 +75,7 @@ public:
 private:
 	bool SegmentIntersection(const FVector& SegmentStartA, const FVector& SegmentEndA, const FVector& SegmentStartB, const FVector& SegmentEndB, FVector& out_IntersectionPoint);
 	bool DetectCircleDrawn(TArray<FVector>& out_DrawnCirclePoints);
-	void GetAllObjectsInLoop(TArray<FVector>& CirclePoints, TArray<AActor*> out_Actors);
+	void GetAllObjectsInLoop(TArray<FVector>& CirclePoints, TArray<AActor*>& out_Actors);
 
 	USplineComponent* SplinePath;
 	float CurrentSplineInputKey;

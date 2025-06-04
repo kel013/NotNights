@@ -297,7 +297,7 @@ bool ANotNIghtsCharacter::DetectCircleDrawn(TArray<FVector>& out_DrawnCirclePoin
 	return false;
 }
 
-void ANotNIghtsCharacter::GetAllObjectsInLoop(TArray<FVector>& CirclePoints, TArray<AActor*> out_Actors)
+void ANotNIghtsCharacter::GetAllObjectsInLoop(TArray<FVector>& CirclePoints, TArray<AActor*>& out_Actors)
 {
 	FVector Center = FVector::Zero();
 	for (const FVector& Vector : CirclePoints)
@@ -316,7 +316,8 @@ void ANotNIghtsCharacter::GetAllObjectsInLoop(TArray<FVector>& CirclePoints, TAr
 	}
 	DrawDebugSphere(GetWorld(), Center, Radius, 12, FColor::Cyan, false, 1.0f, (uint8)0U, 10.0F);
 	TArray<TEnumAsByte < EObjectTypeQuery >>m_objectTypes;
-	m_objectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+	//m_objectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
 
 	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), Center, Radius, m_objectTypes, ABasicCollectible::StaticClass(), TArray<AActor*>(), out_Actors);
+	UE_LOG(LogTemplateCharacter, Display, TEXT("Overlapped actors'%i'"), out_Actors.Num());
 }
