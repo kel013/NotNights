@@ -287,7 +287,7 @@ bool ANotNIghtsCharacter::DetectCircleDrawn(TArray<FVector>& out_DrawnCirclePoin
 		}
 		out_DrawnCirclePoints.Add(LinePathPoints[x]);
 		FVector Connection;
-		if (FMath::SegmentIntersection2D(LatestPoint, LatestPoint2, ExaminePoint, ExaminePoint2, Connection))
+		if (SegmentIntersection(LatestPoint, LatestPoint2, ExaminePoint, ExaminePoint2, Connection))
 		{
 			UE_LOG(LogTemp, Display, TEXT("Segment Intersected"));
 			out_DrawnCirclePoints.Add(Connection);
