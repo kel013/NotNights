@@ -11,9 +11,7 @@ class ANotNIghtsGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
-	/** Pathing with Spline */
-	UPROPERTY(EditAnywhere)
-	AActor* Path;
+
 
 public:
 	ANotNIghtsGameMode();

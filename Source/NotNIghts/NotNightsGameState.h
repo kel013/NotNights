@@ -14,12 +14,22 @@ class NOTNIGHTS_API ANotNightsGameState : public AGameStateBase
 {
 	GENERATED_BODY()
 
-public:
-	//ANotNightsGameState();
+protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int PlayerScore{ 0 };
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int EssentialsCollected{ 0 };
+
+public:
+	//ANotNightsGameState();
+
+	void IncrementScore(int Inc) { PlayerScore += Inc; };
+	void IncrementEssentials(int Inc) { EssentialsCollected += Inc; };
+
+	UFUNCTION(BlueprintCallable)
+	int GetEssentialScore() { return EssentialsCollected; };
+	UFUNCTION(BlueprintCallable)
+	int GetScore() { return PlayerScore; };
 };

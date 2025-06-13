@@ -17,6 +17,9 @@ class NOTNIGHTS_API ABasicCollectible : public AActor, public ICollectible
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ring Mesh", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* StaticMesh;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats", meta = (AllowPrivateAccess = "true"))
+	int Score;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USphereComponent> SphereComponent;
 	
