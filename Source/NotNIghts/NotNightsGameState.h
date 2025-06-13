@@ -9,6 +9,8 @@
 /**
  * 
  */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScoreChanged, int, Score);
+
 UCLASS()
 class NOTNIGHTS_API ANotNightsGameState : public AGameStateBase
 {
@@ -23,9 +25,10 @@ protected:
 	int EssentialsCollected{ 0 };
 
 public:
-	//ANotNightsGameState();
+	UPROPERTY(BlueprintAssignable, Category = "Score")
+	FOnScoreChanged OnScoreChanged;
 
-	void IncrementScore(int Inc) { PlayerScore += Inc; };
+	void IncrementScore(int Inc) { PlayerScore += Inc; OnScoreChanged.Broadcast(PlayerScore); };
 	void IncrementEssentials(int Inc) { EssentialsCollected += Inc; };
 
 	UFUNCTION(BlueprintCallable)
