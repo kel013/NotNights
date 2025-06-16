@@ -11,6 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "PathSpline.h"
+#include "NotNightsWorldSettings.h"
 #include "BasicCollectible.h"
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetMathLibrary.h>
@@ -62,11 +63,12 @@ ANotNIghtsCharacter::ANotNIghtsCharacter()
 
 void ANotNIghtsCharacter::BeginPlay()
 {
-	AActor* PathSpline = UGameplayStatics::GetActorOfClass(GetWorld(), APathSpline::StaticClass());
+	ANotNightsWorldSettings* WorldSetting = Cast<ANotNightsWorldSettings>(GetWorld()->GetWorldSettings());
+	TSoftObjectPtr<APathSpline> PathSpline = WorldSetting->GetPath(0);
 
 	if (PathSpline)
 	{
-		SplinePath = PathSpline->GetComponentByClass<USplineComponent>();
+		SplinePath = PathSpline->GetSpline();
 		if (SplinePath)
 		{
 			float SplineInput = SplinePath->FindInputKeyClosestToWorldLocation(GetActorLocation());
