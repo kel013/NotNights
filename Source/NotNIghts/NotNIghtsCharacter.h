@@ -50,6 +50,8 @@ public:
 	ANotNIghtsCharacter();
 
 	virtual void Tick(float DeltaTime) override;
+
+	void IncrementLap();
 	
 
 protected:
@@ -77,8 +79,12 @@ private:
 	bool DetectCircleDrawn(TArray<FVector>& out_DrawnCirclePoints);
 	void GetAllObjectsInLoop(TArray<FVector>& CirclePoints, TArray<AActor*>& out_Actors);
 
+	void UpdateSplinePath();
+
 	USplineComponent* SplinePath;
 	float CurrentSplineInputKey;
+
+	int CurrentLap{ 0 };
 
 	float SecondsFromLastPathRecord{ 0.0f };
 	TDeque<FVector> LinePathPoints;

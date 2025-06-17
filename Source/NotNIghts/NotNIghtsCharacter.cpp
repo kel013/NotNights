@@ -63,22 +63,7 @@ ANotNIghtsCharacter::ANotNIghtsCharacter()
 
 void ANotNIghtsCharacter::BeginPlay()
 {
-	ANotNightsWorldSettings* WorldSetting = Cast<ANotNightsWorldSettings>(GetWorld()->GetWorldSettings());
-	TSoftObjectPtr<APathSpline> PathSpline = WorldSetting->GetPath(0);
-
-	if (PathSpline)
-	{
-		SplinePath = PathSpline->GetSpline();
-		if (SplinePath)
-		{
-			float SplineInput = SplinePath->FindInputKeyClosestToWorldLocation(GetActorLocation());
-			CurrentSplineInputKey = SplineInput;
-			SetActorLocation(SplinePath->GetLocationAtSplineInputKey(SplineInput, ESplineCoordinateSpace::World));
-			SetActorRotation(SplinePath->GetDirectionAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World).Rotation().Quaternion());
-			FVector RightVector = SplinePath->GetRightVectorAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World) * -1;
-			CameraBoom->SetWorldRotation(RightVector.Rotation().Quaternion());
-		}
-	}
+	UpdateSplinePath();
 
 	LinePathPoints.Reserve(MaxLinePathPoints + 1);
 	Super::BeginPlay();
@@ -140,6 +125,12 @@ void ANotNIghtsCharacter::Tick(float DeltaTime)
 		}
 		SecondsFromLastPathRecord = 0;
 	}
+}
+
+void ANotNIghtsCharacter::IncrementLap()
+{
+	CurrentLap++;
+	UpdateSplinePath();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -322,4 +313,24 @@ void ANotNIghtsCharacter::GetAllObjectsInLoop(TArray<FVector>& CirclePoints, TAr
 
 	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), Center, Radius, m_objectTypes, ABasicCollectible::StaticClass(), TArray<AActor*>(), out_Actors);
 	UE_LOG(LogTemplateCharacter, Display, TEXT("Overlapped actors'%i'"), out_Actors.Num());
+}
+
+void ANotNIghtsCharacter::UpdateSplinePath()
+{
+	ANotNightsWorldSettings* WorldSetting = Cast<ANotNightsWorldSettings>(GetWorld()->GetWorldSettings());
+	TSoftObjectPtr<APathSpline> PathSpline = WorldSetting->GetPath(CurrentLap);
+
+	if (PathSpline)
+	{
+		SplinePath = PathSpline->GetSpline();
+		if (SplinePath)
+		{
+			float SplineInput = SplinePath->FindInputKeyClosestToWorldLocation(GetActorLocation());
+			CurrentSplineInputKey = SplineInput;
+			SetActorLocation(SplinePath->GetLocationAtSplineInputKey(SplineInput, ESplineCoordinateSpace::World));
+			SetActorRotation(SplinePath->GetDirectionAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World).Rotation().Quaternion());
+			FVector RightVector = SplinePath->GetRightVectorAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World) * -1;
+			CameraBoom->SetWorldRotation(RightVector.Rotation().Quaternion());
+		}
+	}
 }
