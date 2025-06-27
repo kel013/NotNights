@@ -12,7 +12,7 @@
 #include "InputActionValue.h"
 #include "PathSpline.h"
 #include "NotNightsWorldSettings.h"
-#include "BasicCollectible.h"
+#include "CollectableBase.h"
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetMathLibrary.h>
 #include <Kismet/KismetSystemLibrary.h>
@@ -120,7 +120,7 @@ void ANotNIghtsCharacter::Tick(float DeltaTime)
 			for (AActor* Colle: CircledCollectibles)
 			{
 				UE_LOG(LogTemp, Display, TEXT("Looping %s"), *Colle->GetFName().ToString());
-				Cast<ABasicCollectible>(Colle)->OnLoop();
+				Cast<ACollectableBase>(Colle)->OnLoop();
 			}
 		}
 		SecondsFromLastPathRecord = 0;
@@ -311,7 +311,7 @@ void ANotNIghtsCharacter::GetAllObjectsInLoop(TArray<FVector>& CirclePoints, TAr
 	TArray<TEnumAsByte < EObjectTypeQuery >>m_objectTypes;
 	//m_objectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
 
-	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), Center, Radius, m_objectTypes, ABasicCollectible::StaticClass(), TArray<AActor*>(), out_Actors);
+	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), Center, Radius, m_objectTypes, ACollectableBase::StaticClass(), TArray<AActor*>(), out_Actors);
 	UE_LOG(LogTemplateCharacter, Display, TEXT("Overlapped actors'%i'"), out_Actors.Num());
 }
 

@@ -24,15 +24,24 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int EssentialsCollected{ 0 };
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int EssentialsNeeded{ 20 };
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool LapComplete{ false };
+
 public:
 	UPROPERTY(BlueprintAssignable, Category = "Score")
 	FOnScoreChanged OnScoreChanged;
 
 	void IncrementScore(int Inc) { PlayerScore += Inc; OnScoreChanged.Broadcast(PlayerScore); };
 	void IncrementEssentials(int Inc) { EssentialsCollected += Inc; };
+	void ToggleLapComplete(bool Complete) { LapComplete = Complete; };
 
 	UFUNCTION(BlueprintCallable)
 	int GetEssentialScore() { return EssentialsCollected; };
 	UFUNCTION(BlueprintCallable)
 	int GetScore() { return PlayerScore; };
+	UFUNCTION(BlueprintCallable)
+	bool IsLapComplete() { return LapComplete; };
 };

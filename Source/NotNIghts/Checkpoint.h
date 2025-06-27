@@ -3,31 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Collectible.h"
-#include "CollectableBase.h"
 #include "GameFramework/Actor.h"
-#include "Components/StaticMeshComponent.h"
-#include "Components/SphereComponent.h"
-#include "BasicCollectible.generated.h"
+#include "Checkpoint.generated.h"
 
 UCLASS()
-class NOTNIGHTS_API ABasicCollectible : public ACollectableBase
+class NOTNIGHTS_API ACheckpoint : public AActor
 {
 	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ring Mesh", meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* StaticMesh;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<USphereComponent> SphereComponent;
 	
 public:	
 	// Sets default values for this actor's properties
-	ABasicCollectible();
-
-	virtual bool OnDirectCollect() override;
-
-	virtual bool OnLoop() override;
+	ACheckpoint();
 
 protected:
 	// Called when the game starts or when spawned

@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Collectible.h"
+#include "CollectableBase.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/Actor.h"
 #include "Ring.generated.h"
 
 UCLASS()
-class NOTNIGHTS_API ARing : public AActor, public ICollectible
+class NOTNIGHTS_API ARing : public ACollectableBase
 {
 	GENERATED_BODY()
 
