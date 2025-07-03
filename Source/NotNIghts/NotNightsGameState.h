@@ -30,16 +30,25 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool LapComplete{ false };
 
+	int EssentialsDeposited{ 0 };
+
 public:
 	UPROPERTY(BlueprintAssignable, Category = "Score")
 	FOnScoreChanged OnScoreChanged;
 
 	void IncrementScore(int Inc) { PlayerScore += Inc; OnScoreChanged.Broadcast(PlayerScore); };
+	void DepositEssentials() { EssentialsDeposited += EssentialsCollected; EssentialsCollected = 0; };
 	void IncrementEssentials(int Inc) { EssentialsCollected += Inc; };
 	void ToggleLapComplete(bool Complete) { LapComplete = Complete; };
 
+	void ResetEssentialDeposit() { EssentialsDeposited = 0; };
+
+	bool IsEssentialsFull() { return EssentialsDeposited >= EssentialsNeeded; };
+
 	UFUNCTION(BlueprintCallable)
 	int GetEssentialScore() { return EssentialsCollected; };
+	UFUNCTION(BlueprintCallable)
+	int GetEssentialsDeposited() { return EssentialsDeposited; };
 	UFUNCTION(BlueprintCallable)
 	int GetScore() { return PlayerScore; };
 	UFUNCTION(BlueprintCallable)

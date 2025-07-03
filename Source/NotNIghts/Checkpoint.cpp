@@ -37,6 +37,7 @@ void ACheckpoint::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 		if (GameState->IsLapComplete())
 		{
 			Cast<ANotNIghtsCharacter>(OtherActor)->IncrementLap();
+			GameState->ToggleLapComplete(false);
 		}
 	}
 }

@@ -27,9 +27,19 @@ void ULevelObjectPoolWorldSubsystem::RegisterLapActors(TArray<AActor*> Actors, i
 
 void ULevelObjectPoolWorldSubsystem::EnableLap(int LapNum)
 {
-
+	for (AActor* Actor : LapActors[LapNum])
+	{
+		Actor->SetActorEnableCollision(true);
+		Actor->SetActorHiddenInGame(false);
+		Actor->SetActorTickEnabled(true);
+	}
 }
 void ULevelObjectPoolWorldSubsystem::DisableLap(int LapNum)
 {
-
+	for (AActor* Actor : LapActors[LapNum])
+	{
+		Actor->SetActorEnableCollision(false);
+		Actor->SetActorHiddenInGame(true);
+		Actor->SetActorTickEnabled(false);
+	}
 }
