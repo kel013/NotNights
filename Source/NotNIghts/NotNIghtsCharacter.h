@@ -51,6 +51,8 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	int GetCurrentLap() { return CurrentLap; };
+
 	void IncrementLap();
 	
 

@@ -3,9 +3,8 @@
 
 #include "Checkpoint.h"
 
-#include "NotNightsGameState.h"
-
 #include "NotNIghtsCharacter.h"
+#include "LevelObjectPoolWorldSubsystem.h"
 
 // Sets default values
 ACheckpoint::ACheckpoint()
@@ -33,11 +32,7 @@ void ACheckpoint::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 {
 	if (OtherActor->IsA(ANotNIghtsCharacter::StaticClass()))
 	{
-		ANotNightsGameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ANotNightsGameState>() : NULL;
-		if (GameState->IsLapComplete())
-		{
-			Cast<ANotNIghtsCharacter>(OtherActor)->IncrementLap();
-			GameState->ToggleLapComplete(false);
-		}
+		ULevelObjectPoolWorldSubsystem* LapPool = GetWorld()->GetSubsystem<ULevelObjectPoolWorldSubsystem>();
+		LapPool->EnableLap(Cast<ANotNIghtsCharacter>(OtherActor)->GetCurrentLap());
 	}
 }
