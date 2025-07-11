@@ -13,7 +13,7 @@ ADeposit::ADeposit()
 	PrimaryActorTick.bCanEverTick = true;
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollider"));
-	BoxComponent->InitBoxExtent(FVector(500.0f, 500.0f, 500.0f));
+	BoxComponent->InitBoxExtent(FVector(200.0f, 200.0f, 200.0f));
 	SetRootComponent(BoxComponent);
 
 	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ADeposit::OnOverlap);

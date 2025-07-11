@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/BoxComponent.h"
 #include "LapComplete.generated.h"
 
 UCLASS()
@@ -11,6 +12,8 @@ class NOTNIGHTS_API ALapComplete : public AActor
 {
 	GENERATED_BODY()
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UBoxComponent> BoxComponent;
 public:	
 	// Sets default values for this actor's properties
 	ALapComplete();

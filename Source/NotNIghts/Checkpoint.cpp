@@ -12,6 +12,11 @@ ACheckpoint::ACheckpoint()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollider"));
+	BoxComponent->InitBoxExtent(FVector(10.0f, 200.0f, 500.0f));
+	SetRootComponent(BoxComponent);
+
+	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ACheckpoint::OnOverlap);
 }
 
 // Called when the game starts or when spawned
