@@ -16,8 +16,14 @@ class NOTNIGHTS_API ANotNightsWorldSettings : public AWorldSettings
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Paths", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Laps", meta = (AllowPrivateAccess = "true"))
 	TArray<TSoftObjectPtr<APathSpline>> Paths;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Laps", meta = (AllowPrivateAccess = "true"))
+	TArray<TSoftObjectPtr<AActor>> LapParents;
+
 	TSoftObjectPtr<APathSpline> GetPath(int Lap);
+	int GetPathCount();
+
+	TArray<TSoftObjectPtr<AActor>> GetLapParents();
 };

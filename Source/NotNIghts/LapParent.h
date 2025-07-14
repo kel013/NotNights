@@ -10,8 +10,7 @@ UCLASS()
 class NOTNIGHTS_API ALapParent : public AActor
 {
 	GENERATED_BODY()
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Laps", meta = (AllowPrivateAccess = "true"))
-	int LapNumber;
+
 public:	
 	// Sets default values for this actor's properties
 	ALapParent();

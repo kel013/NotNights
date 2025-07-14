@@ -5,6 +5,7 @@
 
 #include "NotNightsGameState.h"
 #include "NotNIghtsCharacter.h"
+#include "NotNightsWorldSettings.h"
 #include "LevelObjectPoolWorldSubsystem.h"
 // Sets default values
 ALapComplete::ALapComplete()
@@ -43,8 +44,12 @@ void ALapComplete::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* O
 			ANotNIghtsCharacter* Player = Cast<ANotNIghtsCharacter>(OtherActor);
 			ULevelObjectPoolWorldSubsystem* LapPool = GetWorld()->GetSubsystem<ULevelObjectPoolWorldSubsystem>();
 			LapPool->DisableLap(Player->GetCurrentLap());
-			Player->IncrementLap();
-			GameState->ToggleLapComplete(false);
+			ANotNightsWorldSettings* WorldSetting = Cast<ANotNightsWorldSettings>(GetWorld()->GetWorldSettings());
+			if (Player->GetCurrentLap() + 1 < WorldSetting->GetPathCount())
+			{
+				Player->IncrementLap();
+				GameState->ToggleLapComplete(false);
+			}
 		}
 	}
 }

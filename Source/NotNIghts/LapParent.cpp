@@ -16,10 +16,7 @@ ALapParent::ALapParent()
 void ALapParent::BeginPlay()
 {
 	Super::BeginPlay();
-	ULevelObjectPoolWorldSubsystem* LapPool = GetWorld()->GetSubsystem<ULevelObjectPoolWorldSubsystem>();
-	TArray<AActor*> AttachedActors;
-	GetAttachedActors(AttachedActors);
-	LapPool->RegisterLapActors(AttachedActors, LapNumber);
+
 }
 
 // Called every frame

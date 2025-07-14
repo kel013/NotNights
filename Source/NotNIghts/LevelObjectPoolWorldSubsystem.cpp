@@ -4,6 +4,7 @@
 #include "LevelObjectPoolWorldSubsystem.h"
 
 #include "NotNightsWorldSettings.h"
+#include "NotNightsWorldSettings.h"
 
 void ULevelObjectPoolWorldSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -11,6 +12,20 @@ void ULevelObjectPoolWorldSubsystem::Initialize(FSubsystemCollectionBase& Collec
 	if (WorldSetting)
 	{
 		LapActors.Reserve(WorldSetting->Paths.Num());
+	}
+}
+
+void ULevelObjectPoolWorldSubsystem::PostInitialize()
+{
+	Super::PostInitialize();
+	ANotNightsWorldSettings* WorldSetting = Cast<ANotNightsWorldSettings>(GetWorld()->GetWorldSettings());
+	TArray<TSoftObjectPtr<AActor>> Laps = WorldSetting->GetLapParents();
+	for (int x = 0; x < Laps.Num(); x++)
+	{
+		TArray<AActor*> AttachedActors;
+		Laps[x]->GetAttachedActors(AttachedActors);
+		RegisterLapActors(AttachedActors, x);
+		DisableLap(x);
 	}
 }
 
