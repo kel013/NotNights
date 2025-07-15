@@ -49,6 +49,7 @@ void ALapComplete::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* O
 			{
 				Player->IncrementLap();
 				GameState->ToggleLapComplete(false);
+				UE_LOG(LogTemplateCharacter, Display, TEXT("Lap '%i'"), Player->GetCurrentLap());
 			}
 		}
 	}

@@ -25,7 +25,7 @@ protected:
 	int EssentialsCollected{ 0 };
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	int EssentialsNeeded{ 20 };
+	int EssentialsNeeded{ 1 };
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool LapComplete{ false };
@@ -36,9 +36,12 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Score")
 	FOnScoreChanged OnScoreChanged;
 
+	UPROPERTY(BlueprintAssignable, Category = "Score")
+	FOnScoreChanged OnEssentialChanged;
+
 	void IncrementScore(int Inc) { PlayerScore += Inc; OnScoreChanged.Broadcast(PlayerScore); };
-	void DepositEssentials() { EssentialsDeposited += EssentialsCollected; EssentialsCollected = 0; };
-	void IncrementEssentials(int Inc) { EssentialsCollected += Inc; };
+	void DepositEssentials() { EssentialsDeposited += EssentialsCollected; EssentialsCollected = 0; OnEssentialChanged.Broadcast(EssentialsCollected);};
+	void IncrementEssentials(int Inc) { EssentialsCollected += Inc; OnEssentialChanged.Broadcast(EssentialsCollected);};
 	void ToggleLapComplete(bool Complete) { LapComplete = Complete; };
 
 	void ResetEssentialDeposit() { EssentialsDeposited = 0; };

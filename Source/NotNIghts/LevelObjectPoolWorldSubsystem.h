@@ -16,10 +16,10 @@ class NOTNIGHTS_API ULevelObjectPoolWorldSubsystem : public UWorldSubsystem
 
 public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
-	virtual void PostInitialize() override;
+	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 
 	void RegisterLapActor(AActor* Actor, int LapNum);
-	void RegisterLapActors(TArray<AActor*> Actors, int LapNum);
+	void RegisterLapActors(TArray<AActor*> Actors);
 
 	void EnableLap(int LapNum);
 	void DisableLap(int LapNum);

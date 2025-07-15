@@ -8,24 +8,20 @@
 
 void ULevelObjectPoolWorldSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
-	ANotNightsWorldSettings* WorldSetting = Cast<ANotNightsWorldSettings>(GetWorld()->GetWorldSettings());
-	if (WorldSetting)
-	{
-		LapActors.Reserve(WorldSetting->Paths.Num());
-	}
+
 }
 
-void ULevelObjectPoolWorldSubsystem::PostInitialize()
+void ULevelObjectPoolWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	Super::PostInitialize();
 	ANotNightsWorldSettings* WorldSetting = Cast<ANotNightsWorldSettings>(GetWorld()->GetWorldSettings());
 	TArray<TSoftObjectPtr<AActor>> Laps = WorldSetting->GetLapParents();
+	LapActors.Reserve(WorldSetting->Paths.Num());
 	for (int x = 0; x < Laps.Num(); x++)
 	{
 		TArray<AActor*> AttachedActors;
 		Laps[x]->GetAttachedActors(AttachedActors);
-		RegisterLapActors(AttachedActors, x);
-		DisableLap(x);
+		RegisterLapActors(AttachedActors);
 	}
 }
 
@@ -34,10 +30,15 @@ void ULevelObjectPoolWorldSubsystem::RegisterLapActor(AActor* Actor, int LapNum)
 	check(LapNum < LapActors.Num());
 	LapActors[LapNum].Add(Actor);
 }
-void ULevelObjectPoolWorldSubsystem::RegisterLapActors(TArray<AActor*> Actors, int LapNum)
+void ULevelObjectPoolWorldSubsystem::RegisterLapActors(TArray<AActor*> Actors)
 {
-	check(LapNum < LapActors.Num());
-	LapActors[LapNum].Append(Actors);
+	LapActors.Add(Actors);
+	for (AActor* Actor : Actors)
+	{
+		Actor->SetActorEnableCollision(false);
+		Actor->SetActorHiddenInGame(true);
+		Actor->SetActorTickEnabled(false);
+	}
 }
 
 void ULevelObjectPoolWorldSubsystem::EnableLap(int LapNum)
