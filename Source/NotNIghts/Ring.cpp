@@ -46,6 +46,15 @@ void ARing::OnConstruction(const FTransform& Transform)
 
 bool ARing::OnDirectCollect()
 {
+	ANotNightsGameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ANotNightsGameState>() : NULL;
+	if (Score != 0)
+	{
+		GameState->IncrementScore(Score);
+	}
+	if (EssentialScore != 0)
+	{
+		GameState->IncrementEssentials(EssentialScore);
+	}
 	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);
 	SetActorTickEnabled(false);

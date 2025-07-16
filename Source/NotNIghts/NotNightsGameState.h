@@ -39,9 +39,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Score")
 	FOnScoreChanged OnEssentialChanged;
 
-	void IncrementScore(int Inc) { PlayerScore += Inc; OnScoreChanged.Broadcast(PlayerScore); };
-	void DepositEssentials() { EssentialsDeposited += EssentialsCollected; EssentialsCollected = 0; OnEssentialChanged.Broadcast(EssentialsCollected);};
-	void IncrementEssentials(int Inc) { EssentialsCollected += Inc; OnEssentialChanged.Broadcast(EssentialsCollected);};
+	void IncrementScore(int Inc);
+	void DepositEssentials();
+	void IncrementEssentials(int Inc);
 	void ToggleLapComplete(bool Complete) { LapComplete = Complete; };
 
 	void ResetEssentialDeposit() { EssentialsDeposited = 0; };

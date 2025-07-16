@@ -2,7 +2,6 @@
 
 
 #include "BasicCollectible.h"
-#include "NotNightsGameState.h"
 
 #include "NotNIghtsCharacter.h"
 
@@ -32,7 +31,14 @@ void ABasicCollectible::BeginPlay()
 bool ABasicCollectible::OnDirectCollect()
 {
 	ANotNightsGameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ANotNightsGameState>() : NULL;
-	GameState->IncrementScore(Score);
+	if (Score != 0)
+	{
+		GameState->IncrementScore(Score);
+	}
+	if (EssentialScore != 0)
+	{
+		GameState->IncrementEssentials(EssentialScore);
+	}
 	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);
 	SetActorTickEnabled(false);

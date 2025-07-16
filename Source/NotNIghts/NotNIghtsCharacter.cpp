@@ -328,7 +328,6 @@ void ANotNIghtsCharacter::UpdateSplinePath()
 			float SplineInput = SplinePath->FindInputKeyClosestToWorldLocation(GetActorLocation());
 			CurrentSplineInputKey = SplineInput;
 			SetActorLocation(SplinePath->GetLocationAtSplineInputKey(SplineInput, ESplineCoordinateSpace::World));
-			SetActorRotation(SplinePath->GetDirectionAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World).Rotation().Quaternion());
 			FVector RightVector = SplinePath->GetRightVectorAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World) * -1;
 			CameraBoom->SetWorldRotation(RightVector.Rotation().Quaternion());
 		}
