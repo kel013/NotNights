@@ -66,6 +66,14 @@ void ANotNIghtsCharacter::BeginPlay()
 	UpdateSplinePath();
 
 	LinePathPoints.Reserve(MaxLinePathPoints + 1);
+
+	UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
+	if (MovementComponent)
+	{
+		MovementComponent->MaxFlySpeed = FlySpeed;
+	}
+	RotationSpeed = NormalRotationSpeed;
+
 	Super::BeginPlay();
 }
 
@@ -155,9 +163,9 @@ void ANotNIghtsCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
 		
-		// Jumping
-		//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-		//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		// Speed Up
+		EnhancedInputComponent->BindAction(AccelAction, ETriggerEvent::Started, this, &ANotNIghtsCharacter::Accelerate);
+		EnhancedInputComponent->BindAction(AccelAction, ETriggerEvent::Completed, this, &ANotNIghtsCharacter::Deccelerate);
 
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ANotNIghtsCharacter::Move);
@@ -217,6 +225,27 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 
 		// add movement 
 		AddMovementInput(MoveDirection, MovementVector.Length());
+	}
+}
+
+void ANotNIghtsCharacter::Accelerate(const FInputActionValue& Value)
+{
+	UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
+	if (MovementComponent)
+	{
+		MovementComponent->MaxFlySpeed = AccelFlySpeed;
+		//MovementComponent->MaxAcceleration
+		RotationSpeed = AccelRotationSpeed;
+	}
+}
+
+void ANotNIghtsCharacter::Deccelerate(const FInputActionValue& Value)
+{
+	UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
+	if (MovementComponent)
+	{
+		MovementComponent->MaxFlySpeed = FlySpeed;
+		RotationSpeed = NormalRotationSpeed;
 	}
 }
 
