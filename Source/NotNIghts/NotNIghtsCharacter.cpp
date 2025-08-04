@@ -74,6 +74,8 @@ void ANotNIghtsCharacter::BeginPlay()
 	}
 	RotationSpeed = NormalRotationSpeed;
 
+	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ANotNIghtsCharacter::OnCollide);
+
 	Super::BeginPlay();
 }
 
@@ -247,6 +249,35 @@ void ANotNIghtsCharacter::Deccelerate(const FInputActionValue& Value)
 		MovementComponent->MaxFlySpeed = FlySpeed;
 		RotationSpeed = NormalRotationSpeed;
 	}
+}
+
+void ANotNIghtsCharacter::OnCollide(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	UE_LOG(LogTemp, Display, TEXT("Collision Detected"));
+	// get right vector 
+	const FVector ForwardDirection = SplinePath->GetDirectionAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
+
+	const FVector RightVector = SplinePath->GetRightVectorAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
+
+	FVector FlatNormal = UKismetMathLibrary::ProjectVectorOnToPlane(NormalImpulse, RightVector);
+
+	FVector CurrentDirection = GetActorForwardVector();
+	CurrentDirection.Normalize();
+
+	FVector ReflectedDirection = UKismetMathLibrary::GetReflectionVector(CurrentDirection, FlatNormal);
+
+	ReflectedDirection.Normalize();
+
+	FRotator MovementRotation = UKismetMathLibrary::MakeRotFromYX(RightVector, ReflectedDirection);
+
+	SetActorRotation(MovementRotation.Quaternion());
+
+	float Magnitude = GetCharacterMovement()->Velocity.Size();
+
+	ReflectedDirection *= Magnitude;
+
+	GetCharacterMovement()->Velocity = ReflectedDirection;
+	
 }
 
 bool ANotNIghtsCharacter::SegmentIntersection(const FVector& SegmentStartA, const FVector& SegmentEndA, const FVector& SegmentStartB, const FVector& SegmentEndB, FVector& out_IntersectionPoint)

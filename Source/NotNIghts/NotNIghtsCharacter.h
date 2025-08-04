@@ -78,6 +78,9 @@ protected:
 	void Move(const FInputActionValue& Value);
 	void Accelerate(const FInputActionValue& Value);
 	void Deccelerate(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void OnCollide(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 			
 
 protected:
