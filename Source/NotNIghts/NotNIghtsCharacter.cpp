@@ -259,7 +259,9 @@ void ANotNIghtsCharacter::OnCollide(UPrimitiveComponent* HitComp, AActor* OtherA
 
 	const FVector RightVector = SplinePath->GetRightVectorAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
 
-	FVector FlatNormal = UKismetMathLibrary::ProjectVectorOnToPlane(NormalImpulse, RightVector);
+	FVector FlatNormal = UKismetMathLibrary::ProjectVectorOnToPlane(Hit.Normal, RightVector);
+
+	DrawDebugLine(GetWorld(), Hit.Location, Hit.Location + (Hit.Normal * 1000), FColor::Magenta, false, 1.0F, (uint8)0U, 10.0F);
 
 	FVector CurrentDirection = GetActorForwardVector();
 	CurrentDirection.Normalize();
