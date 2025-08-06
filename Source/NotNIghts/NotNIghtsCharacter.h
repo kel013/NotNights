@@ -107,6 +107,8 @@ private:
 
 	int CurrentLap{ 0 };
 
+	bool IsSpeedUp{ false };
+
 	float SecondsFromLastPathRecord{ 0.0f };
 	TDeque<FVector> LinePathPoints;
 };

@@ -67,6 +67,7 @@ void ANotNIghtsCharacter::BeginPlay()
 
 	LinePathPoints.Reserve(MaxLinePathPoints + 1);
 
+	//Make sure to set speeds to default just in case
 	UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
 	if (MovementComponent)
 	{
@@ -83,6 +84,7 @@ void ANotNIghtsCharacter::BeginPlay()
 void ANotNIghtsCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	//Lock the player into spline
 	if (SplinePath)
 	{
 		FVector SearchFrom = GetActorLocation();
@@ -97,6 +99,7 @@ void ANotNIghtsCharacter::Tick(float DeltaTime)
 		SplineLoc.Z = GetActorLocation().Z;
 		SetActorLocation(SplineLoc);
 		
+		//Make sure camera is always on one side of the spline
 		FVector RightVector = SplinePath->GetRightVectorAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World) * -1;
 		CameraBoom->SetWorldRotation(RightVector.Rotation().Quaternion());
 	}
@@ -110,7 +113,7 @@ void ANotNIghtsCharacter::Tick(float DeltaTime)
 		DrawDebugLine(GetWorld(), ExaminePoint, ExaminePoint2, FColor::Green, false, 0.0F, (uint8)0U, 10.0F);
 	}
 #endif
-
+	//Paths for loop detection
 	SecondsFromLastPathRecord += DeltaTime;
 	if (SecondsFromLastPathRecord >= SecondsBetweenPathPoints)
 	{
@@ -192,7 +195,6 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 		// get up vector
 		const FVector UpDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Z);
 
-		// get right vector 
 		const FVector ForwardDirection = SplinePath->GetDirectionAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
 
 		const FVector RightVector = SplinePath->GetRightVectorAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
@@ -200,6 +202,7 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 		FVector CurrentDirection = GetActorForwardVector();
 		CurrentDirection.Normalize();
 		
+		//Calculate how the character is currently aligned (maybe use ProjectVectorOnToPlane if we run into issues)
 		FVector2D CurrentAlign;
 
 		CurrentAlign.X = FVector::DotProduct(CurrentDirection, ForwardDirection);
@@ -209,6 +212,7 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 
 		FVector GoalDirection = (UpDirection * MovementVector.Y) + (ForwardDirection * MovementVector.X);
 
+		//Edge case for when the input is opposite of the current direction
 		if ((CurrentAlign + MovementVector).IsZero())
 		{
 			GoalDirection += UpDirection;
@@ -216,8 +220,10 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 
 		GoalDirection.Normalize();
 
+		//Interp for character to slowly rotate to desired direction
 		FVector MoveDirection = FMath::VInterpNormalRotationTo(CurrentDirection,GoalDirection,FApp::GetDeltaTime(), RotationSpeed);
 
+		//Make sure the character is always facing according to the spline
 		FRotator MovementRotation = UKismetMathLibrary::MakeRotFromYX(RightVector, MoveDirection);
 
 		SetActorRotation(MovementRotation.Quaternion());
@@ -236,8 +242,8 @@ void ANotNIghtsCharacter::Accelerate(const FInputActionValue& Value)
 	if (MovementComponent)
 	{
 		MovementComponent->MaxFlySpeed = AccelFlySpeed;
-		//MovementComponent->MaxAcceleration
 		RotationSpeed = AccelRotationSpeed;
+		IsSpeedUp = true;
 	}
 }
 
@@ -248,52 +254,55 @@ void ANotNIghtsCharacter::Deccelerate(const FInputActionValue& Value)
 	{
 		MovementComponent->MaxFlySpeed = FlySpeed;
 		RotationSpeed = NormalRotationSpeed;
+		IsSpeedUp = false;
 	}
 }
 
 void ANotNIghtsCharacter::OnCollide(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogTemp, Display, TEXT("Collision Detected"));
-	// get right vector 
-	const FVector ForwardDirection = SplinePath->GetDirectionAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
+	if (IsSpeedUp)
+	{
+		UE_LOG(LogTemp, Display, TEXT("Collision Detected"));
+		//"Bounce" the character when colliding with a solid wall
+		const FVector ForwardDirection = SplinePath->GetDirectionAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
 
-	const FVector RightVector = SplinePath->GetRightVectorAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
+		const FVector RightVector = SplinePath->GetRightVectorAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
 
-	FVector FlatNormal = UKismetMathLibrary::ProjectVectorOnToPlane(Hit.Normal, RightVector);
+		//Make normal projected onto the spline direction
+		FVector FlatNormal = UKismetMathLibrary::ProjectVectorOnToPlane(Hit.Normal, RightVector);
 
-	DrawDebugLine(GetWorld(), Hit.Location, Hit.Location + (Hit.Normal * 1000), FColor::Magenta, false, 1.0F, (uint8)0U, 10.0F);
+		DrawDebugLine(GetWorld(), Hit.Location, Hit.Location + (Hit.Normal * 100), FColor::Magenta, false, 1.0F, (uint8)0U, 10.0F);
 
-	FVector CurrentDirection = GetActorForwardVector();
-	CurrentDirection.Normalize();
+		FVector CurrentDirection = GetActorForwardVector();
+		CurrentDirection.Normalize();
 
-	FVector ReflectedDirection = UKismetMathLibrary::GetReflectionVector(CurrentDirection, FlatNormal);
+		FVector ReflectedDirection = UKismetMathLibrary::GetReflectionVector(CurrentDirection, FlatNormal);
 
-	ReflectedDirection.Normalize();
+		ReflectedDirection.Normalize();
 
-	FRotator MovementRotation = UKismetMathLibrary::MakeRotFromYX(RightVector, ReflectedDirection);
+		FRotator MovementRotation = UKismetMathLibrary::MakeRotFromYX(RightVector, ReflectedDirection);
 
-	SetActorRotation(MovementRotation.Quaternion());
+		SetActorRotation(MovementRotation.Quaternion());
 
-	float Magnitude = GetCharacterMovement()->Velocity.Size();
+		float Magnitude = GetCharacterMovement()->Velocity.Size();
 
-	ReflectedDirection *= Magnitude;
+		ReflectedDirection *= Magnitude;
 
-	GetCharacterMovement()->Velocity = ReflectedDirection;
-	
+		GetCharacterMovement()->Velocity = ReflectedDirection;
+	}
 }
 
 bool ANotNIghtsCharacter::SegmentIntersection(const FVector& SegmentStartA, const FVector& SegmentEndA, const FVector& SegmentStartB, const FVector& SegmentEndB, FVector& out_IntersectionPoint)
 {
-	// find out which way is up
 	const FRotator Rotation = Controller->GetControlRotation();
 	const FRotator YawRotation(0, Rotation.Yaw, 0);
-	// get up vector
+	
 	const FVector UpDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Z);
 
-	// get right vector 
 	const FVector ForwardDirection = SplinePath->GetDirectionAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
 	const FVector SplineLocation = SplinePath->GetLocationAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
 
+	//Project the segment to the flat "plane" on the spline (maybe use ProjectVectorOnToPlane if we run into issues)
 	FVector SegmentStartA2D;
 
 	SegmentStartA2D.X = FVector::DotProduct(SegmentStartA- SplineLocation, ForwardDirection);
@@ -314,6 +323,7 @@ bool ANotNIghtsCharacter::SegmentIntersection(const FVector& SegmentStartA, cons
 	SegmentEndB2D.X = FVector::DotProduct(SegmentEndB- SplineLocation, ForwardDirection);
 	SegmentEndB2D.Y = FVector::DotProduct(SegmentEndB- SplineLocation, UpDirection);
 
+	//Use flat segments to detect intersection
 	FVector Intersection2D;
 	bool Intersects = FMath::SegmentIntersection2D(SegmentStartA2D, SegmentEndA2D, SegmentStartB2D, SegmentEndB2D, Intersection2D);
 
