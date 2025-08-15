@@ -13,11 +13,17 @@ ALapComplete::ALapComplete()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollider"));
-	BoxComponent->InitBoxExtent(FVector(150.0f, 150.0f, 150.0f));
-	SetRootComponent(BoxComponent);
+	LapCompleteCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollider"));
+	LapCompleteCollision->InitBoxExtent(FVector(150.0f, 150.0f, 150.0f));
+	RootComponent = LapCompleteCollision;
 
-	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ALapComplete::OnOverlap);
+	LapCompleteCollision->OnComponentBeginOverlap.AddDynamic(this, &ALapComplete::OnOverlapLapComplete);
+
+	CheckpointCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("CheckPointBoxColliderCheckPoint"));
+	CheckpointCollision->InitBoxExtent(FVector(10.0f, 200.0f, 500.0f));
+	CheckpointCollision->SetupAttachment(LapCompleteCollision);
+
+	CheckpointCollision->OnComponentBeginOverlap.AddDynamic(this, &ALapComplete::OnOverlapLapCheckpoint);
 }
 
 // Called when the game starts or when spawned
@@ -25,6 +31,7 @@ void ALapComplete::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	CheckpointCollision->AttachToComponent(LapCompleteCollision, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called every frame
@@ -34,7 +41,7 @@ void ALapComplete::Tick(float DeltaTime)
 
 }
 
-void ALapComplete::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ALapComplete::OnOverlapLapComplete(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor->IsA(ANotNIghtsCharacter::StaticClass()))
 	{
@@ -52,5 +59,14 @@ void ALapComplete::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* O
 				UE_LOG(LogTemplateCharacter, Display, TEXT("Lap '%i'"), Player->GetCurrentLap());
 			}
 		}
+	}
+}
+
+void ALapComplete::OnOverlapLapCheckpoint(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor->IsA(ANotNIghtsCharacter::StaticClass()))
+	{
+		ULevelObjectPoolWorldSubsystem* LapPool = GetWorld()->GetSubsystem<ULevelObjectPoolWorldSubsystem>();
+		LapPool->EnableLap(Cast<ANotNIghtsCharacter>(OtherActor)->GetCurrentLap());
 	}
 }

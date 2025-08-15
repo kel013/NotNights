@@ -16,7 +16,7 @@ ABasicCollectible::ABasicCollectible()
 	RootComponent = SphereComponent;
 
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	StaticMesh->AttachToComponent(SphereComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	StaticMesh->SetupAttachment(SphereComponent);
 
 	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ABasicCollectible::OnOverlap);
 }
