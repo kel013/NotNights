@@ -40,7 +40,7 @@ public:
 	ARing();
 	void OnConstruction(const FTransform& Transform) override;
 
-	virtual bool OnDirectCollect() override;
+	virtual bool OnDirectCollect_Implementation() override;
 
 protected:
 	// Called when the game starts or when spawned

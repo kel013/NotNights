@@ -22,6 +22,11 @@ class NOTNIGHTS_API ICollectible
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual bool OnDirectCollect();
-	virtual bool OnLoop();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Collect")
+	bool OnDirectCollect();
+	virtual bool OnDirectCollect_Implementation();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Collect")
+	bool OnLoop();
+	virtual bool OnLoop_Implementation();
 };

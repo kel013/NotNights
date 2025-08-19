@@ -5,12 +5,12 @@
 
 // Add default functionality here for any ICollectible functions that are not pure virtual.
 
-bool ICollectible::OnDirectCollect()
+bool ICollectible::OnDirectCollect_Implementation()
 {
 	return false;
 }
 
-bool ICollectible::OnLoop()
+bool ICollectible::OnLoop_Implementation()
 {
 	return false;
 }

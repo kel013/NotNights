@@ -44,9 +44,10 @@ void ARing::OnConstruction(const FTransform& Transform)
 	SetUpRingObjects();
 }
 
-bool ARing::OnDirectCollect()
+bool ARing::OnDirectCollect_Implementation()
 {
 	ANotNightsGameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ANotNightsGameState>() : NULL;
+	//Check the scores provided by the collectible
 	if (Score != 0)
 	{
 		GameState->IncrementScore(Score);

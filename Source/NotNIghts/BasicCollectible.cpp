@@ -28,7 +28,7 @@ void ABasicCollectible::BeginPlay()
 	
 }
 
-bool ABasicCollectible::OnDirectCollect()
+bool ABasicCollectible::OnDirectCollect_Implementation()
 {
 	ANotNightsGameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ANotNightsGameState>() : NULL;
 	if (Score != 0)
@@ -45,7 +45,7 @@ bool ABasicCollectible::OnDirectCollect()
 	return true;
 }
 
-bool ABasicCollectible::OnLoop()
+bool ABasicCollectible::OnLoop_Implementation()
 {
 	ANotNightsGameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ANotNightsGameState>() : NULL;
 	GameState->IncrementScore(Score);

@@ -25,9 +25,9 @@ public:
 	// Sets default values for this actor's properties
 	ABasicCollectible();
 
-	virtual bool OnDirectCollect() override;
+	virtual bool OnDirectCollect_Implementation() override;
 
-	virtual bool OnLoop() override;
+	virtual bool OnLoop_Implementation() override;
 
 protected:
 	// Called when the game starts or when spawned
