@@ -97,7 +97,7 @@ void ARing::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherAct
 {
 	if (OtherActor->IsA(ANotNIghtsCharacter::StaticClass()))
 	{
-		OnDirectCollect();
+		Execute_OnDirectCollect(this);
 	}
 }
 

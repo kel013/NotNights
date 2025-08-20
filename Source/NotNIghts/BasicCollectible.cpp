@@ -57,7 +57,7 @@ void ABasicCollectible::OnOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 {
 	if (OtherActor->IsA(ANotNIghtsCharacter::StaticClass()))
 	{
-		OnDirectCollect();
+		Execute_OnDirectCollect(this);
 	}
 }
 
