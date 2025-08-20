@@ -28,7 +28,7 @@ void ABasicCollectible::BeginPlay()
 	
 }
 
-bool ABasicCollectible::OnDirectCollect_Implementation()
+void ABasicCollectible::OnDirectCollect_Implementation()
 {
 	ANotNightsGameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ANotNightsGameState>() : NULL;
 	if (Score != 0)
@@ -42,17 +42,15 @@ bool ABasicCollectible::OnDirectCollect_Implementation()
 	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);
 	SetActorTickEnabled(false);
-	return true;
 }
 
-bool ABasicCollectible::OnLoop_Implementation()
+void ABasicCollectible::OnLoop_Implementation()
 {
 	ANotNightsGameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ANotNightsGameState>() : NULL;
 	GameState->IncrementScore(Score);
 	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);
 	SetActorTickEnabled(false);
-	return true;
 }
 
 void ABasicCollectible::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

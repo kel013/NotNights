@@ -44,7 +44,7 @@ void ARing::OnConstruction(const FTransform& Transform)
 	SetUpRingObjects();
 }
 
-bool ARing::OnDirectCollect_Implementation()
+void ARing::OnDirectCollect_Implementation()
 {
 	ANotNightsGameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ANotNightsGameState>() : NULL;
 	//Check the scores provided by the collectible
@@ -59,7 +59,6 @@ bool ARing::OnDirectCollect_Implementation()
 	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);
 	SetActorTickEnabled(false);
-	return true;
 }
 
 void ARing::SetUpRingObjects()

@@ -30,7 +30,7 @@ class NOTNIGHTS_API ARing : public ACollectableBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ring Mesh", meta = (AllowPrivateAccess = "true"))
 	float MeshScale{ 1.0f };
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ring Mesh", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Ring Mesh", meta = (AllowPrivateAccess = "true"))
 	TArray<UStaticMeshComponent*> RingStaticMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -40,7 +40,7 @@ public:
 	ARing();
 	void OnConstruction(const FTransform& Transform) override;
 
-	virtual bool OnDirectCollect_Implementation() override;
+	virtual void OnDirectCollect_Implementation() override;
 
 protected:
 	// Called when the game starts or when spawned
