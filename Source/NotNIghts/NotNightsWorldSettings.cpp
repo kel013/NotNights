@@ -5,7 +5,7 @@
 
 TSoftObjectPtr<APathSpline> ANotNightsWorldSettings::GetPath(int Lap)
 {
-	if (Lap <= Paths.Num())
+	if (Lap >= Paths.Num())
 	{
 		return nullptr;
 	}
