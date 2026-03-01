@@ -16,16 +16,15 @@ class NOTNIGHTS_API AMenuManager : public AInfo
 {
 	GENERATED_BODY()
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	ACameraActor* MenuCamera;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	bool IsActive;
 
 public:
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void OnEnterMenu();
-
+	//Each menu has their own manager and you can bind this Function to events to enter the menu and make the correct camera transition
 	UFUNCTION(BlueprintCallable)
 	void EnterMenu();
 };

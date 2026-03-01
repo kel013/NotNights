@@ -192,7 +192,7 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
-		// get up vector
+		// get relevant vectors according to the location in spline
 		const FVector UpDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Z);
 
 		const FVector ForwardDirection = SplinePath->GetDirectionAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
@@ -202,7 +202,7 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 		FVector CurrentDirection = GetActorForwardVector();
 		CurrentDirection.Normalize();
 		
-		//Calculate how the character is currently aligned (maybe use ProjectVectorOnToPlane if we run into issues)
+		//Calculate how the character is currently aligned in relation to the spline (maybe use ProjectVectorOnToPlane if we run into issues)
 		FVector2D CurrentAlign;
 
 		CurrentAlign.X = FVector::DotProduct(CurrentDirection, ForwardDirection);
@@ -260,10 +260,10 @@ void ANotNIghtsCharacter::Deccelerate(const FInputActionValue& Value)
 
 void ANotNIghtsCharacter::OnCollide(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	//"Bounce" the character when colliding with a solid wall when the player is sped up
 	if (IsSpeedUp)
 	{
 		UE_LOG(LogTemp, Display, TEXT("Collision Detected"));
-		//"Bounce" the character when colliding with a solid wall
 		const FVector ForwardDirection = SplinePath->GetDirectionAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
 
 		const FVector RightVector = SplinePath->GetRightVectorAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
@@ -341,6 +341,7 @@ bool ANotNIghtsCharacter::DetectCircleDrawn(TArray<FVector>& out_DrawnCirclePoin
 	const FVector& LatestPoint = LinePathPoints.First();
 	const FVector& LatestPoint2 = LinePathPoints[1];
 
+	//Loop through each point to find an intersection of lines
 	for (int x = 2; x < LinePathPoints.Num()-1; x++)
 	{
 		const FVector& ExaminePoint = LinePathPoints[x];
@@ -364,12 +365,15 @@ bool ANotNIghtsCharacter::DetectCircleDrawn(TArray<FVector>& out_DrawnCirclePoin
 
 void ANotNIghtsCharacter::GetAllObjectsInLoop(TArray<FVector>& CirclePoints, TArray<AActor*>& out_Actors)
 {
+	//We just get a approximate circle to calculate because its close enough
+	//Find the center by averaging all the points
 	FVector Center = FVector::Zero();
 	for (const FVector& Vector : CirclePoints)
 	{
 		Center += Vector;
 	}
 	Center /= CirclePoints.Num();
+	//Calculate radius to be the largest distance between a point and its center
 	float Radius = 0.0f;
 	for (const FVector& Vector : CirclePoints)
 	{
@@ -381,7 +385,6 @@ void ANotNIghtsCharacter::GetAllObjectsInLoop(TArray<FVector>& CirclePoints, TAr
 	}
 	DrawDebugSphere(GetWorld(), Center, Radius, 12, FColor::Cyan, false, 1.0f, (uint8)0U, 10.0F);
 	TArray<TEnumAsByte < EObjectTypeQuery >>m_objectTypes;
-	//m_objectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
 
 	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), Center, Radius, m_objectTypes, ACollectableBase::StaticClass(), TArray<AActor*>(), out_Actors);
 	UE_LOG(LogTemplateCharacter, Display, TEXT("Overlapped actors'%i'"), out_Actors.Num());
