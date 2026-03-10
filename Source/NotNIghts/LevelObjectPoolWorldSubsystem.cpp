@@ -23,6 +23,7 @@ void ULevelObjectPoolWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 		Laps[x]->GetAttachedActors(AttachedActors);
 		RegisterLapActors(AttachedActors);
 	}
+	EnableLap(0);
 }
 
 void ULevelObjectPoolWorldSubsystem::RegisterLapActor(AActor* Actor, int LapNum)
