@@ -42,6 +42,8 @@ public:
 
 	virtual void OnDirectCollect_Implementation() override;
 
+	void Reset();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

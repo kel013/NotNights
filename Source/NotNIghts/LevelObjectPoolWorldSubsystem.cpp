@@ -4,7 +4,7 @@
 #include "LevelObjectPoolWorldSubsystem.h"
 
 #include "NotNightsWorldSettings.h"
-#include "NotNightsWorldSettings.h"
+#include "Collectible.h"
 
 void ULevelObjectPoolWorldSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {

@@ -59,6 +59,21 @@ void ARing::OnDirectCollect_Implementation()
 	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);
 	SetActorTickEnabled(false);
+	Reset();
+}
+
+void ARing::Reset()
+{
+	double Degree = 360.0f / NumberOfSections;
+	for(int x = 0; x < NumberOfSections; x++)
+	{
+		UStaticMeshComponent* RingStaticMeshComponent = RingStaticMesh[x];
+
+		RingStaticMeshComponent->SetRelativeScale3D(FVector(MeshScale, MeshScale, MeshScale));
+		FVector Location = FVector::UpVector * Radius;
+		Location = Location.RotateAngleAxis(Degree * x, FVector::ForwardVector);
+		RingStaticMeshComponent->SetRelativeLocation(Location);
+	}
 }
 
 void ARing::SetUpRingObjects()
