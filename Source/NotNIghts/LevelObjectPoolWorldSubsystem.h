@@ -19,7 +19,7 @@ public:
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 
 	void RegisterLapActor(AActor* Actor, int LapNum);
-	void RegisterLapActors(TArray<AActor*> Actors);
+	void RegisterLapActors(TArray<AActor*> Actors,bool HideLaps);
 
 	void EnableLap(int LapNum);
 	void DisableLap(int LapNum);

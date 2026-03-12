@@ -21,9 +21,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Laps", meta = (AllowPrivateAccess = "true"))
 	TArray<TSoftObjectPtr<AActor>> LapParents;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Laps", meta = (AllowPrivateAccess = "true"))
+	bool HideOtherLapObjects;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Laps", meta = (AllowPrivateAccess = "true"))
+	float LapTimeLimit = 120.0f;
 
 	TSoftObjectPtr<APathSpline> GetPath(int Lap);
 	int GetPathCount();
 
 	TArray<TSoftObjectPtr<AActor>> GetLapParents();
+	bool GetHideOtherLaps();
+	float GetTimeLimit();
 };

@@ -21,3 +21,13 @@ TArray<TSoftObjectPtr<AActor>> ANotNightsWorldSettings::GetLapParents()
 {
 	return LapParents;
 }
+
+bool ANotNightsWorldSettings::GetHideOtherLaps()
+{
+	return HideOtherLapObjects;
+}
+
+float ANotNightsWorldSettings::GetTimeLimit()
+{
+	return LapTimeLimit;
+}

@@ -68,7 +68,6 @@ public:
 	int GetCurrentLap() { return CurrentLap; };
 
 	void IncrementLap();
-	
 
 protected:
 

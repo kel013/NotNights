@@ -21,7 +21,7 @@ void ULevelObjectPoolWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	{
 		TArray<AActor*> AttachedActors;
 		Laps[x]->GetAttachedActors(AttachedActors);
-		RegisterLapActors(AttachedActors);
+		RegisterLapActors(AttachedActors,WorldSetting->GetHideOtherLaps());
 	}
 	EnableLap(0);
 }
@@ -31,9 +31,13 @@ void ULevelObjectPoolWorldSubsystem::RegisterLapActor(AActor* Actor, int LapNum)
 	check(LapNum < LapActors.Num());
 	LapActors[LapNum].Add(Actor);
 }
-void ULevelObjectPoolWorldSubsystem::RegisterLapActors(TArray<AActor*> Actors)
+void ULevelObjectPoolWorldSubsystem::RegisterLapActors(TArray<AActor*> Actors,bool HideLaps)
 {
 	LapActors.Add(Actors);
+	if (!HideLaps)
+	{
+		return;
+	}
 	for (AActor* Actor : Actors)
 	{
 		Actor->SetActorEnableCollision(false);

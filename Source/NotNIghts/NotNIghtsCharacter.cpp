@@ -181,6 +181,8 @@ void ANotNIghtsCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	}
 }
 
+//////////////////////////////////////////////////////////////////////////
+
 void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D
