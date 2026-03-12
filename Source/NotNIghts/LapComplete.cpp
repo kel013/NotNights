@@ -56,6 +56,9 @@ void ALapComplete::OnOverlapLapComplete(UPrimitiveComponent* OverlappedComponent
 			{
 				Player->IncrementLap();
 				GameState->ToggleLapComplete(false);
+				SetActorEnableCollision(false);
+				SetActorHiddenInGame(true);
+				SetActorTickEnabled(false);
 				UE_LOG(LogTemplateCharacter, Display, TEXT("Lap '%i'"), Player->GetCurrentLap());
 			}
 		}
