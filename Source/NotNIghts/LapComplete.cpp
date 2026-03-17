@@ -61,6 +61,10 @@ void ALapComplete::OnOverlapLapComplete(UPrimitiveComponent* OverlappedComponent
 				SetActorTickEnabled(false);
 				UE_LOG(LogTemplateCharacter, Display, TEXT("Lap '%i'"), Player->GetCurrentLap());
 			}
+			else
+			{
+				GameMode->CompleteLevel();
+			}
 		}
 	}
 }

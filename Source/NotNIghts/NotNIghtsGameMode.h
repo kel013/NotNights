@@ -17,8 +17,20 @@ public:
 
 };
 
+USTRUCT(BlueprintType)
+struct FLevelResult
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(BlueprintReadWrite)
+	int TotalScore;
+
+
+};
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScoreChanged, int, Score);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSendLapResults, FLapResult, Result);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSendLevelResults, FLevelResult, Result);
 UCLASS(minimalapi)
 class ANotNIghtsGameMode : public AGameModeBase
 {
@@ -35,7 +47,9 @@ protected:
 	void FailPlayer();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	int PlayerScore{ 0 };
+	int PlayerTotalScore{ 0 };
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int PlayerLapScore{ 0 };
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int EssentialsCollected{ 0 };
@@ -59,6 +73,8 @@ public:
 	FOnScoreChanged OnEssentialChanged;
 	UPROPERTY(BlueprintAssignable, Category = "Score")
 	FOnSendLapResults OnSendLapResults;
+	UPROPERTY(BlueprintAssignable, Category = "Score")
+	FOnSendLevelResults OnSendLevelResults;
 
 	void IncrementScore(int Inc);
 	void DepositEssentials();
@@ -66,6 +82,8 @@ public:
 	void FinishLap();
 	void ToggleLapRequirementsComplete(bool Complete) { LapComplete = Complete; };
 	void ResetLapTimer();
+
+	void CompleteLevel();
 
 	void ResetEssentialDeposit() { EssentialsDeposited = 0; };
 
@@ -76,7 +94,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	int GetEssentialsDeposited() { return EssentialsDeposited; };
 	UFUNCTION(BlueprintCallable)
-	int GetScore() { return PlayerScore; };
+	int GetLapScore() { return PlayerLapScore; };
 	UFUNCTION(BlueprintCallable)
 	bool IsLapComplete() { return LapComplete; };
 	UFUNCTION(BlueprintCallable)

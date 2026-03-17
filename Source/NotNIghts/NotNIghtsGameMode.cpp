@@ -34,8 +34,8 @@ void ANotNIghtsGameMode::FailPlayer()
 
 void ANotNIghtsGameMode::IncrementScore(int Inc)
 {
-	PlayerScore += Inc;
-	OnScoreChanged.Broadcast(PlayerScore);
+	PlayerLapScore += Inc;
+	OnScoreChanged.Broadcast(PlayerLapScore);
 };
 
 void ANotNIghtsGameMode::DepositEssentials()
@@ -53,9 +53,10 @@ void ANotNIghtsGameMode::IncrementEssentials(int Inc)
 void ANotNIghtsGameMode::FinishLap()
 {
 	FLapResult Result;
-	Result.TotalScore = PlayerScore;
+	Result.TotalScore = PlayerLapScore;
 	OnSendLapResults.Broadcast(Result);
-	PlayerScore = 0;
+	PlayerTotalScore += PlayerLapScore;
+	PlayerLapScore = 0;
 	ToggleLapRequirementsComplete(false);
 	ResetLapTimer();
 }
@@ -64,6 +65,14 @@ void ANotNIghtsGameMode::ResetLapTimer()
 {
 	GetWorldTimerManager().SetTimer(LapTimerHandle, this, &ANotNIghtsGameMode::FailPlayer, LapTimeLimit, false);
 };
+
+void ANotNIghtsGameMode::CompleteLevel()
+{
+	FLevelResult Result;
+	Result.TotalScore = PlayerTotalScore;
+	OnSendLevelResults.Broadcast(Result);
+	GetWorldTimerManager().ClearTimer(LapTimerHandle);
+}
 
 float ANotNIghtsGameMode::GetLapTimeRemaining()
 {
