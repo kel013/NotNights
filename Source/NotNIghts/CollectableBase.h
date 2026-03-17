@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Collectible.h"
-#include "NotNightsGameState.h"
 #include "CollectableBase.generated.h"
 
 UCLASS()

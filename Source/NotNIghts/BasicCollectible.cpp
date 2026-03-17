@@ -3,6 +3,7 @@
 
 #include "BasicCollectible.h"
 
+#include "NotNightsGameMode.h"
 #include "NotNIghtsCharacter.h"
 
 // Sets default values
@@ -30,14 +31,14 @@ void ABasicCollectible::BeginPlay()
 
 void ABasicCollectible::OnDirectCollect_Implementation()
 {
-	ANotNightsGameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ANotNightsGameState>() : NULL;
+	ANotNIghtsGameMode* const GameMode = GetWorld() != NULL ? GetWorld()->GetAuthGameMode<ANotNIghtsGameMode>() : NULL;
 	if (Score != 0)
 	{
-		GameState->IncrementScore(Score);
+		GameMode->IncrementScore(Score);
 	}
 	if (EssentialScore != 0)
 	{
-		GameState->IncrementEssentials(EssentialScore);
+		GameMode->IncrementEssentials(EssentialScore);
 	}
 	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);
@@ -46,8 +47,8 @@ void ABasicCollectible::OnDirectCollect_Implementation()
 
 void ABasicCollectible::OnLoop_Implementation()
 {
-	ANotNightsGameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ANotNightsGameState>() : NULL;
-	GameState->IncrementScore(Score);
+	ANotNIghtsGameMode* const GameMode = GetWorld() != NULL ? GetWorld()->GetAuthGameMode<ANotNIghtsGameMode>() : NULL;
+	GameMode->IncrementScore(Score);
 	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);
 	SetActorTickEnabled(false);

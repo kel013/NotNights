@@ -3,7 +3,7 @@
 
 #include "Deposit.h"
 
-#include "NotNightsGameState.h"
+#include "NotNIghtsGameMode.h"
 #include "NotNIghtsCharacter.h"
 
 // Sets default values
@@ -28,13 +28,13 @@ void ADeposit::BeginPlay()
 
 void ADeposit::DepositEssentials()
 {
-	ANotNightsGameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ANotNightsGameState>() : NULL;
-	GameState->DepositEssentials();
+	ANotNIghtsGameMode* const GameMode = GetWorld() != NULL ? GetWorld()->GetAuthGameMode<ANotNIghtsGameMode>() : NULL;
+	GameMode->DepositEssentials();
 
-	if (GameState->IsEssentialsFull())
+	if (GameMode->IsEssentialsFull())
 	{
-		GameState->ToggleLapComplete(true);
-		GameState->ResetEssentialDeposit();
+		GameMode->ToggleLapRequirementsComplete(true);
+		GameMode->ResetEssentialDeposit();
 		SetActorEnableCollision(false);
 		SetActorHiddenInGame(true);
 		SetActorTickEnabled(false);

@@ -23,7 +23,10 @@ void ULevelObjectPoolWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 		Laps[x]->GetAttachedActors(AttachedActors);
 		RegisterLapActors(AttachedActors,WorldSetting->GetHideOtherLaps());
 	}
-	EnableLap(0);
+	if (Laps.IsEmpty() && WorldSetting->GetHideOtherLaps())
+	{
+		EnableLap(0);
+	}
 }
 
 void ULevelObjectPoolWorldSubsystem::RegisterLapActor(AActor* Actor, int LapNum)

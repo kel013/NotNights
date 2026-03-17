@@ -3,7 +3,7 @@
 
 #include "LapComplete.h"
 
-#include "NotNightsGameState.h"
+#include "NotNIghtsGameMode.h"
 #include "NotNIghtsCharacter.h"
 #include "NotNightsWorldSettings.h"
 #include "LevelObjectPoolWorldSubsystem.h"
@@ -45,8 +45,8 @@ void ALapComplete::OnOverlapLapComplete(UPrimitiveComponent* OverlappedComponent
 {
 	if (OtherActor->IsA(ANotNIghtsCharacter::StaticClass()))
 	{
-		ANotNightsGameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ANotNightsGameState>() : NULL;
-		if (GameState->IsLapComplete())
+		ANotNIghtsGameMode* const GameMode = GetWorld() != NULL ? GetWorld()->GetAuthGameMode<ANotNIghtsGameMode>() : NULL;
+		if (GameMode->IsLapComplete())
 		{
 			ANotNIghtsCharacter* Player = Cast<ANotNIghtsCharacter>(OtherActor);
 			ULevelObjectPoolWorldSubsystem* LapPool = GetWorld()->GetSubsystem<ULevelObjectPoolWorldSubsystem>();
@@ -55,7 +55,7 @@ void ALapComplete::OnOverlapLapComplete(UPrimitiveComponent* OverlappedComponent
 			if (Player->GetCurrentLap() + 1 < WorldSetting->GetPathCount())
 			{
 				Player->IncrementLap();
-				GameState->ToggleLapComplete(false);
+				GameMode->FinishLap();
 				SetActorEnableCollision(false);
 				SetActorHiddenInGame(true);
 				SetActorTickEnabled(false);

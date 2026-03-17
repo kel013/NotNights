@@ -3,6 +3,7 @@
 
 #include "Ring.h"
 
+#include "NotNightsGameMode.h"
 #include "NotNIghtsCharacter.h"
 
 // Sets default values
@@ -46,15 +47,15 @@ void ARing::OnConstruction(const FTransform& Transform)
 
 void ARing::OnDirectCollect_Implementation()
 {
-	ANotNightsGameState* const GameState = GetWorld() != NULL ? GetWorld()->GetGameState<ANotNightsGameState>() : NULL;
+	ANotNIghtsGameMode* const GameMode = GetWorld() != NULL ? GetWorld()->GetAuthGameMode<ANotNIghtsGameMode>() : NULL;
 	//Check the scores provided by the collectible
 	if (Score != 0)
 	{
-		GameState->IncrementScore(Score);
+		GameMode->IncrementScore(Score);
 	}
 	if (EssentialScore != 0)
 	{
-		GameState->IncrementEssentials(EssentialScore);
+		GameMode->IncrementEssentials(EssentialScore);
 	}
 	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);

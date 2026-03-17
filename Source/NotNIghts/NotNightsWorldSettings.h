@@ -22,7 +22,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Laps", meta = (AllowPrivateAccess = "true"))
 	TArray<TSoftObjectPtr<AActor>> LapParents;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Laps", meta = (AllowPrivateAccess = "true"))
-	bool HideOtherLapObjects;
+	bool HideOtherLapObjects = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Laps", meta = (AllowPrivateAccess = "true"))
 	float LapTimeLimit = 120.0f;
 
