@@ -54,7 +54,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int EssentialsCollected{ 0 };
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int EssentialsNeeded{ 1 };
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
