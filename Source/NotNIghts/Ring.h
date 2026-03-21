@@ -14,7 +14,7 @@ UCLASS()
 class NOTNIGHTS_API ARing : public ACollectableBase
 {
 	GENERATED_BODY()
-
+protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int NumberOfSections{ 12 };
 
@@ -48,6 +48,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	// Setup the individual beads of the ring in a circle of the static mesh
+	virtual void SetUpRingObjects();
+
 	UFUNCTION()
 	void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
@@ -56,6 +59,5 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	void SetUpRingObjects();
 
 };

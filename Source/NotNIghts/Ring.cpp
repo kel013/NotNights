@@ -30,10 +30,6 @@ ARing::ARing()
 void ARing::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
-	if (BoxComponent)
-	{
-		BoxComponent->SetBoxExtent(FVector(BoxThickness, Radius, Radius));
-	}
 	for (UStaticMeshComponent* MeshComponent : RingStaticMesh)
 	{
 		if (MeshComponent)
@@ -79,6 +75,10 @@ void ARing::Reset()
 
 void ARing::SetUpRingObjects()
 {
+	if (BoxComponent)
+	{
+		BoxComponent->SetBoxExtent(FVector(BoxThickness, Radius, Radius));
+	}
 	double Degree = 360.0f / NumberOfSections;
 	for (int x = 0; x < NumberOfSections; x++)
 	{
