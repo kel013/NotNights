@@ -75,6 +75,7 @@ protected:
 
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
+	void Launch(FVector Direction, float Duration);
 	void Accelerate(const FInputActionValue& Value);
 	void Deccelerate(const FInputActionValue& Value);
 

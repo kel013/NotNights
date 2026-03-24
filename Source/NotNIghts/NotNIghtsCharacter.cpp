@@ -238,6 +238,11 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
+void ANotNIghtsCharacter::Launch(FVector Direction, float Duration)
+{
+
+}
+
 void ANotNIghtsCharacter::Accelerate(const FInputActionValue& Value)
 {
 	UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
