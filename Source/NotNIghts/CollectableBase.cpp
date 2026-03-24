@@ -3,6 +3,8 @@
 
 #include "CollectableBase.h"
 
+#include "NotNIghtsCharacter.h"
+
 // Sets default values
 ACollectableBase::ACollectableBase()
 {
@@ -16,6 +18,14 @@ void ACollectableBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void ACollectableBase::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor->IsA(ANotNIghtsCharacter::StaticClass()))
+	{
+		Execute_OnDirectCollect(this);
+	}
 }
 
 // Called every frame

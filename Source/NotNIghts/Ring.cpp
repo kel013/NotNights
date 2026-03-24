@@ -109,14 +109,6 @@ void ARing::BeginPlay()
 	
 }
 
-void ARing::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (OtherActor->IsA(ANotNIghtsCharacter::StaticClass()))
-	{
-		Execute_OnDirectCollect(this);
-	}
-}
-
 // Called every frame
 void ARing::Tick(float DeltaTime)
 {
