@@ -84,6 +84,21 @@ void ANotNIghtsCharacter::BeginPlay()
 void ANotNIghtsCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	//Adds a constant movement input when the player is being launched
+	if (PlayerMovementState == Launched)
+	{
+		const FVector RightVector = SplinePath->GetRightVectorAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
+
+		//Make sure the character is always facing according to the spline
+		FRotator MovementRotation = UKismetMathLibrary::MakeRotFromYX(RightVector, GetActorForwardVector());
+
+		SetActorRotation(MovementRotation.Quaternion());
+
+		// add movement 
+		AddMovementInput(GetActorForwardVector(), 1.0f);
+	}
+
 	//Lock the player into spline
 	if (SplinePath)
 	{
@@ -185,6 +200,11 @@ void ANotNIghtsCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 {
+	//If the player is being launched from a launcher, they should not be able to control the character
+	if (PlayerMovementState == Launched)
+	{
+		return;
+	}
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -240,7 +260,35 @@ void ANotNIghtsCharacter::Move(const FInputActionValue& Value)
 
 void ANotNIghtsCharacter::Launch(FVector Direction, float Duration)
 {
+	PlayerMovementState = Launched;
 
+	UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
+	if (MovementComponent)
+	{
+		MovementComponent->MaxFlySpeed = AccelFlySpeed;
+	}
+
+	//Make sure the character is always facing according to the spline
+	const FVector RightVector = SplinePath->GetRightVectorAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
+	FRotator MovementRotation = UKismetMathLibrary::MakeRotFromYX(RightVector, Direction);
+
+	SetActorRotation(MovementRotation.Quaternion());
+
+	GetWorldTimerManager().SetTimer(LaunchTimerHandle, this, &ANotNIghtsCharacter::EndLaunch, Duration, false);
+}
+
+void  ANotNIghtsCharacter::EndLaunch()
+{
+	PlayerMovementState = Standard;
+
+	if (!IsSpeedUp)
+	{
+		UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
+		if (MovementComponent)
+		{
+			MovementComponent->MaxFlySpeed = FlySpeed;
+		}
+	}
 }
 
 void ANotNIghtsCharacter::Accelerate(const FInputActionValue& Value)
@@ -259,7 +307,10 @@ void ANotNIghtsCharacter::Deccelerate(const FInputActionValue& Value)
 	UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
 	if (MovementComponent)
 	{
-		MovementComponent->MaxFlySpeed = FlySpeed;
+		if (PlayerMovementState != Launched)
+		{
+			MovementComponent->MaxFlySpeed = FlySpeed;
+		}
 		RotationSpeed = NormalRotationSpeed;
 		IsSpeedUp = false;
 	}

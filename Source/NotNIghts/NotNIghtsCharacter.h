@@ -9,6 +9,12 @@
 #include "Containers/Deque.h"
 #include "NotNIghtsCharacter.generated.h"
 
+enum MovementState
+{
+	Standard,
+	Launched
+};
+
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
@@ -76,6 +82,7 @@ protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 	void Launch(FVector Direction, float Duration);
+	void EndLaunch();
 	void Accelerate(const FInputActionValue& Value);
 	void Deccelerate(const FInputActionValue& Value);
 
@@ -101,6 +108,10 @@ private:
 	void GetAllObjectsInLoop(TArray<FVector>& CirclePoints, TArray<AActor*>& out_Actors);
 
 	void UpdateSplinePath();
+
+	MovementState PlayerMovementState{Standard};
+
+	FTimerHandle LaunchTimerHandle;
 
 	USplineComponent* SplinePath;
 	float CurrentSplineInputKey;
