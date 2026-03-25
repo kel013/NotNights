@@ -75,13 +75,15 @@ public:
 
 	void IncrementLap();
 
+	UFUNCTION(BlueprintCallable)
+	void Launch(FVector Direction, float Duration);
+
 protected:
 
 	virtual void BeginPlay() override;
 
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
-	void Launch(FVector Direction, float Duration);
 	void EndLaunch();
 	void Accelerate(const FInputActionValue& Value);
 	void Deccelerate(const FInputActionValue& Value);
