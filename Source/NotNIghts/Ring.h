@@ -42,11 +42,13 @@ public:
 
 	virtual void OnDirectCollect_Implementation() override;
 
-	void Reset();
+	virtual void SetRingMeshPositions();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void SetCollisionBoxExtents();
 
 	// Setup the individual beads of the ring in a circle of the static mesh
 	virtual void SetUpRingObjects();

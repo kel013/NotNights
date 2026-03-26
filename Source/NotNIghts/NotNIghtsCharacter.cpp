@@ -148,7 +148,7 @@ void ANotNIghtsCharacter::Tick(float DeltaTime)
 			for (AActor* Colle: CircledCollectibles)
 			{
 				UE_LOG(LogTemp, Display, TEXT("Looping %s"), *Colle->GetFName().ToString());
-				Cast<ACollectableBase>(Colle)->OnLoop();
+				ICollectible::Execute_OnLoop(Cast<ACollectableBase>(Colle));
 			}
 		}
 		SecondsFromLastPathRecord = 0;

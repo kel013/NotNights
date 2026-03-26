@@ -56,11 +56,12 @@ void ARing::OnDirectCollect_Implementation()
 	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);
 	SetActorTickEnabled(false);
-	Reset();
+	SetRingMeshPositions();
 }
 
-void ARing::Reset()
+void ARing::SetRingMeshPositions()
 {
+	check(RingStaticMesh.Num() == NumberOfSections);
 	double Degree = 360.0f / NumberOfSections;
 	for(int x = 0; x < NumberOfSections; x++)
 	{
@@ -73,13 +74,17 @@ void ARing::Reset()
 	}
 }
 
-void ARing::SetUpRingObjects()
+void ARing::SetCollisionBoxExtents()
 {
 	if (BoxComponent)
 	{
 		BoxComponent->SetBoxExtent(FVector(BoxThickness, Radius, Radius));
 	}
-	double Degree = 360.0f / NumberOfSections;
+}
+
+void ARing::SetUpRingObjects()
+{
+	SetCollisionBoxExtents();
 	for (int x = 0; x < NumberOfSections; x++)
 	{
 		FString MeshString = "RingBall";
@@ -94,12 +99,9 @@ void ARing::SetUpRingObjects()
 		RingStaticMeshComponent->AttachToComponent(BoxComponent, FAttachmentTransformRules::KeepRelativeTransform);
 		RingStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-		RingStaticMeshComponent->SetRelativeScale3D(FVector(MeshScale, MeshScale, MeshScale));
-		FVector Location = FVector::UpVector * Radius;
-		Location = Location.RotateAngleAxis(Degree * x, FVector::ForwardVector);
-		RingStaticMeshComponent->SetRelativeLocation(Location);
 		RingStaticMesh.Emplace(RingStaticMeshComponent);
 	}
+	SetRingMeshPositions();
 }
 
 // Called when the game starts or when spawned

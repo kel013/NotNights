@@ -16,6 +16,8 @@ class NOTNIGHTS_API AHalfRing : public ARing
 	// A half ring is composed of a square length with a half circle at the end
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float StraightLength{ 500.0f };
+public:
+	void SetRingMeshPositions() override;
 protected:
-	void SetUpRingObjects() override;
+	void SetCollisionBoxExtents() override;
 };
