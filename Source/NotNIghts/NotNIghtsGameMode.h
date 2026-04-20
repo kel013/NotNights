@@ -49,7 +49,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int PlayerTotalScore{ 0 };
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	int PlayerLapScore{ 0 };
+	int CurrentPlayerLapScore{ 0 };
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TArray<int> PlayerLapScores;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int EssentialsCollected{ 0 };
@@ -94,11 +96,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	int GetEssentialsDeposited() { return EssentialsDeposited; };
 	UFUNCTION(BlueprintCallable)
-	int GetLapScore() { return PlayerLapScore; };
+	int GetLapScore() { return CurrentPlayerLapScore; };
 	UFUNCTION(BlueprintCallable)
 	bool IsLapComplete() { return LapComplete; };
 	UFUNCTION(BlueprintCallable)
 	float GetLapTimeRemaining();
+
+	int TotalLapCount;
 };
 
 

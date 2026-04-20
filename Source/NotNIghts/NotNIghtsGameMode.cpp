@@ -23,6 +23,8 @@ void ANotNIghtsGameMode::BeginPlay()
 	ANotNightsWorldSettings* WorldSetting = Cast<ANotNightsWorldSettings>(GetWorld()->GetWorldSettings());
 	LapTimeLimit = WorldSetting->GetTimeLimit();
 	GetWorldTimerManager().SetTimer(LapTimerHandle, this, &ANotNIghtsGameMode::FailPlayer, LapTimeLimit, false);
+	TotalLapCount = WorldSetting->GetPathCount();
+	PlayerLapScores.Reserve(TotalLapCount);
 	Super::BeginPlay();
 }
 
@@ -34,8 +36,8 @@ void ANotNIghtsGameMode::FailPlayer()
 
 void ANotNIghtsGameMode::IncrementScore(int Inc)
 {
-	PlayerLapScore += Inc;
-	OnScoreChanged.Broadcast(PlayerLapScore);
+	CurrentPlayerLapScore += Inc;
+	OnScoreChanged.Broadcast(CurrentPlayerLapScore);
 };
 
 void ANotNIghtsGameMode::DepositEssentials()
@@ -53,10 +55,11 @@ void ANotNIghtsGameMode::IncrementEssentials(int Inc)
 void ANotNIghtsGameMode::FinishLap()
 {
 	FLapResult Result;
-	Result.TotalScore = PlayerLapScore;
+	Result.TotalScore = CurrentPlayerLapScore;
 	OnSendLapResults.Broadcast(Result);
-	PlayerTotalScore += PlayerLapScore;
-	PlayerLapScore = 0;
+	PlayerTotalScore += CurrentPlayerLapScore;
+	PlayerLapScores.Add(CurrentPlayerLapScore);
+	CurrentPlayerLapScore = 0;
 	ToggleLapRequirementsComplete(false);
 	ResetLapTimer();
 }
