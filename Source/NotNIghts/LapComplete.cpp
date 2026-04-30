@@ -63,7 +63,7 @@ void ALapComplete::OnOverlapLapComplete(UPrimitiveComponent* OverlappedComponent
 			}
 			else
 			{
-				GameMode->CompleteLevel();
+				GameMode->EndLevel(true);
 			}
 		}
 	}

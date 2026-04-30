@@ -36,7 +36,9 @@ void ANotNIghtsGameMode::FailPlayer()
 
 void ANotNIghtsGameMode::IncrementScore(int Inc)
 {
-	CurrentPlayerLapScore += Inc;
+	GetWorldTimerManager().SetTimer(LinkTimerHandle, this, &ANotNIghtsGameMode::ResetLinkScore, LinkTimeWindow, false);
+	LinkScore += Inc;
+	CurrentPlayerLapScore += LinkScore;
 	OnScoreChanged.Broadcast(CurrentPlayerLapScore);
 };
 

@@ -69,6 +69,13 @@ protected:
 	FTimerHandle LapTimerHandle;
 	float LapTimeLimit;
 
+	FTimerHandle LinkTimerHandle;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float LinkTimeWindow{1.0f};
+	int LinkScore{ 0 };
+
+	void ResetLinkScore() { LinkScore = 0; };
+
 public:
 	UPROPERTY(BlueprintAssignable, Category = "Score")
 	FOnScoreChanged OnScoreChanged;
