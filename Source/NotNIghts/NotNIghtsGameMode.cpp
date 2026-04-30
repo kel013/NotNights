@@ -31,7 +31,7 @@ void ANotNIghtsGameMode::BeginPlay()
 //Game fail state
 void ANotNIghtsGameMode::FailPlayer()
 {
-	UE_LOG(LogTemp, Display, TEXT("Player failed to complete the lap in time"));
+	EndLevel(false);
 }
 
 void ANotNIghtsGameMode::IncrementScore(int Inc)
@@ -69,10 +69,11 @@ void ANotNIghtsGameMode::ResetLapTimer()
 	GetWorldTimerManager().SetTimer(LapTimerHandle, this, &ANotNIghtsGameMode::FailPlayer, LapTimeLimit, false);
 };
 
-void ANotNIghtsGameMode::CompleteLevel()
+void ANotNIghtsGameMode::EndLevel(bool Success)
 {
 	FLevelResult Result;
 	Result.TotalScore = PlayerTotalScore;
+	Result.Success = Success;
 	OnSendLevelResults.Broadcast(Result);
 	GetWorldTimerManager().ClearTimer(LapTimerHandle);
 }

@@ -24,7 +24,8 @@ struct FLevelResult
 public:
 	UPROPERTY(BlueprintReadWrite)
 	int TotalScore;
-
+	UPROPERTY(BlueprintReadWrite)
+	bool Success;
 
 };
 
@@ -44,6 +45,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintCallable)
 	void FailPlayer();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
@@ -85,7 +87,7 @@ public:
 	void ToggleLapRequirementsComplete(bool Complete) { LapComplete = Complete; };
 	void ResetLapTimer();
 
-	void CompleteLevel();
+	void EndLevel(bool Success);
 
 	void ResetEssentialDeposit() { EssentialsDeposited = 0; };
 
