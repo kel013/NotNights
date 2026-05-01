@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "Components/SplineComponent.h"
 #include "Containers/Deque.h"
+#include "NotNIghtsGameMode.h"
 #include "NotNIghtsCharacter.generated.h"
 
 enum MovementState
@@ -71,7 +72,7 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-	int GetCurrentLap() { return CurrentLap; };
+	int GetCurrentLap() { return GameMode->GetCurrentLap(); };
 
 	void IncrementLap();
 
@@ -111,14 +112,14 @@ private:
 
 	void UpdateSplinePath();
 
+	ANotNIghtsGameMode* GameMode;
+
 	MovementState PlayerMovementState{Standard};
 
 	FTimerHandle LaunchTimerHandle;
 
 	USplineComponent* SplinePath;
 	float CurrentSplineInputKey;
-
-	int CurrentLap{ 0 };
 
 	bool IsSpeedUp{ false };
 

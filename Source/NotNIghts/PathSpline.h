@@ -7,6 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "PathSpline.generated.h"
 
+
 UCLASS()
 class NOTNIGHTS_API APathSpline : public AActor
 {
@@ -34,4 +35,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	USplineComponent* GetSpline(){ return Spline; };
+
+	int GetAMinimum() { return ARankScoreMinimum; };
+	int GetBMinimum() { return BRankScoreMinimum; };
+	int GetCMinimum() { return CRankScoreMinimum; };
 };

@@ -3,8 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PathSpline.h"
 #include "GameFramework/GameModeBase.h"
 #include "NotNIghtsGameMode.generated.h"
+
+UENUM()
+enum class EGrade : uint8
+{
+	EGrade_A	UMETA(DisplayName = "A"),
+	EGrade_B	UMETA(DisplayName = "B"),
+	EGrade_C	UMETA(DisplayName = "C"),
+	EGrade_D	UMETA(DisplayName = "D")
+};
 
 USTRUCT(BlueprintType)
 struct FLapResult
@@ -14,7 +24,8 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	int TotalScore;
 
-
+	UPROPERTY(BlueprintReadWrite)
+	EGrade LapGrade;
 };
 
 USTRUCT(BlueprintType)
@@ -27,6 +38,8 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool Success;
 
+	UPROPERTY(BlueprintReadWrite)
+	EGrade LevelGrade;
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScoreChanged, int, Score);
@@ -74,7 +87,16 @@ protected:
 	float LinkTimeWindow{1.0f};
 	int LinkScore{ 0 };
 
+	int CurrentLap{ 0 };
+	
+	TSoftObjectPtr <APathSpline> CurrentPath;
+
 	void ResetLinkScore() { LinkScore = 0; };
+
+	//Later calculate the minimum score needed for the grades of the entire level. Basically the minimums for each lap combined is the minimum
+	int LevelAScoreMinimum{ 0 };
+	int LevelBScoreMinimum{ 0 };
+	int LevelCScoreMinimum{ 0 };
 
 public:
 	UPROPERTY(BlueprintAssignable, Category = "Score")
@@ -91,6 +113,7 @@ public:
 	void DepositEssentials();
 	void IncrementEssentials(int Inc);
 	void FinishLap();
+	int GetCurrentLap() { return CurrentLap; };
 	void ToggleLapRequirementsComplete(bool Complete) { LapComplete = Complete; };
 	void ResetLapTimer();
 
@@ -110,6 +133,8 @@ public:
 	bool IsLapComplete() { return LapComplete; };
 	UFUNCTION(BlueprintCallable)
 	float GetLapTimeRemaining();
+
+	TSoftObjectPtr<APathSpline> GetCurrentPath() { return CurrentPath; };
 
 	int TotalLapCount;
 };

@@ -10,7 +10,6 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
-#include "PathSpline.h"
 #include "NotNightsWorldSettings.h"
 #include "CollectableBase.h"
 #include <Kismet/GameplayStatics.h>
@@ -76,6 +75,8 @@ void ANotNIghtsCharacter::BeginPlay()
 	RotationSpeed = NormalRotationSpeed;
 
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ANotNIghtsCharacter::OnCollide);
+
+	GameMode = GetWorld() != NULL ? GetWorld()->GetAuthGameMode<ANotNIghtsGameMode>() : NULL;
 
 	Super::BeginPlay();
 }
@@ -157,7 +158,7 @@ void ANotNIghtsCharacter::Tick(float DeltaTime)
 
 void ANotNIghtsCharacter::IncrementLap()
 {
-	CurrentLap++;
+	GameMode->FinishLap();
 	UpdateSplinePath();
 }
 
@@ -450,8 +451,7 @@ void ANotNIghtsCharacter::GetAllObjectsInLoop(TArray<FVector>& CirclePoints, TAr
 
 void ANotNIghtsCharacter::UpdateSplinePath()
 {
-	ANotNightsWorldSettings* WorldSetting = Cast<ANotNightsWorldSettings>(GetWorld()->GetWorldSettings());
-	TSoftObjectPtr<APathSpline> PathSpline = WorldSetting->GetPath(CurrentLap);
+	TSoftObjectPtr<APathSpline> PathSpline = GameMode->GetCurrentPath();
 
 	if (PathSpline)
 	{

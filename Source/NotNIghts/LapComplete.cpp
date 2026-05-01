@@ -55,7 +55,6 @@ void ALapComplete::OnOverlapLapComplete(UPrimitiveComponent* OverlappedComponent
 			if (Player->GetCurrentLap() + 1 < WorldSetting->GetPathCount())
 			{
 				Player->IncrementLap();
-				GameMode->FinishLap();
 				SetActorEnableCollision(false);
 				SetActorHiddenInGame(true);
 				SetActorTickEnabled(false);
