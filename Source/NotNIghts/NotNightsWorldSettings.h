@@ -7,9 +7,6 @@
 #include "PathSpline.h"
 #include "NotNightsWorldSettings.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class NOTNIGHTS_API ANotNightsWorldSettings : public AWorldSettings
 {

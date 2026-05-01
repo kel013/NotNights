@@ -14,7 +14,6 @@ class NOTNIGHTS_API APathSpline : public AActor
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ring Mesh", meta = (AllowPrivateAccess = "true"))
 	USplineComponent* Spline;
-	
 public:	
 	// Sets default values for this actor's properties
 	APathSpline();
@@ -22,6 +21,13 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int ARankScoreMinimum;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int BRankScoreMinimum;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int CRankScoreMinimum;
 
 public:	
 	// Called every frame
