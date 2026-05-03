@@ -63,6 +63,7 @@ void ALapComplete::OnOverlapLapComplete(UPrimitiveComponent* OverlappedComponent
 			else
 			{
 				GameMode->EndLevel(true);
+				LevelComplete = true;
 			}
 		}
 	}
@@ -70,7 +71,7 @@ void ALapComplete::OnOverlapLapComplete(UPrimitiveComponent* OverlappedComponent
 
 void ALapComplete::OnOverlapLapCheckpoint(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->IsA(ANotNIghtsCharacter::StaticClass()))
+	if (!LevelComplete && OtherActor->IsA(ANotNIghtsCharacter::StaticClass()))
 	{
 		ULevelObjectPoolWorldSubsystem* LapPool = GetWorld()->GetSubsystem<ULevelObjectPoolWorldSubsystem>();
 		LapPool->EnableLap(Cast<ANotNIghtsCharacter>(OtherActor)->GetCurrentLap());

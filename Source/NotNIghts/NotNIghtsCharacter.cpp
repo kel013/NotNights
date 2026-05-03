@@ -62,6 +62,8 @@ ANotNIghtsCharacter::ANotNIghtsCharacter()
 
 void ANotNIghtsCharacter::BeginPlay()
 {
+	GameMode = GetWorld() != NULL ? GetWorld()->GetAuthGameMode<ANotNIghtsGameMode>() : NULL;
+
 	UpdateSplinePath();
 
 	LinePathPoints.Reserve(MaxLinePathPoints + 1);
@@ -75,8 +77,6 @@ void ANotNIghtsCharacter::BeginPlay()
 	RotationSpeed = NormalRotationSpeed;
 
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ANotNIghtsCharacter::OnCollide);
-
-	GameMode = GetWorld() != NULL ? GetWorld()->GetAuthGameMode<ANotNIghtsGameMode>() : NULL;
 
 	Super::BeginPlay();
 }

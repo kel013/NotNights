@@ -47,7 +47,14 @@ void ABasicCollectible::OnDirectCollect_Implementation()
 void ABasicCollectible::OnLoop_Implementation()
 {
 	ANotNIghtsGameMode* const GameMode = GetWorld() != NULL ? GetWorld()->GetAuthGameMode<ANotNIghtsGameMode>() : NULL;
-	GameMode->IncrementScore(Score);
+	if (Score != 0)
+	{
+		GameMode->IncrementScore(Score);
+	}
+	if (EssentialScore != 0)
+	{
+		GameMode->IncrementEssentials(EssentialScore);
+	}
 	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);
 	SetActorTickEnabled(false);

@@ -24,6 +24,7 @@ void ANotNIghtsGameMode::BeginPlay()
 	LapTimeLimit = WorldSetting->GetTimeLimit();
 	GetWorldTimerManager().SetTimer(LapTimerHandle, this, &ANotNIghtsGameMode::FailPlayer, LapTimeLimit, false);
 	TotalLapCount = WorldSetting->GetPathCount();
+	CurrentPath = WorldSetting->GetPath(CurrentLap);
 	PlayerLapScores.Reserve(TotalLapCount);
 	Super::BeginPlay();
 }
@@ -101,6 +102,7 @@ void ANotNIghtsGameMode::ResetLapTimer()
 void ANotNIghtsGameMode::EndLevel(bool Success)
 {
 	FLevelResult Result;
+	PlayerTotalScore += CurrentPlayerLapScore;
 	Result.TotalScore = PlayerTotalScore;
 	Result.Success = Success;
 
