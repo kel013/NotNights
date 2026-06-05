@@ -7,7 +7,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "NotNIghtsGameMode.generated.h"
 
-UENUM()
+UENUM(BlueprintType)
 enum class EGrade : uint8
 {
 	EGrade_A	UMETA(DisplayName = "A"),
