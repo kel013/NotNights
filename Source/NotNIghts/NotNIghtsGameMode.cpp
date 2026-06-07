@@ -106,15 +106,19 @@ void ANotNIghtsGameMode::EndLevel(bool Success)
 	Result.TotalScore = PlayerTotalScore;
 	Result.Success = Success;
 
-	if (CurrentPlayerLapScore >= LevelAScoreMinimum)
+	LevelAScoreMinimum += CurrentPath->GetAMinimum();
+	LevelBScoreMinimum += CurrentPath->GetBMinimum();
+	LevelCScoreMinimum += CurrentPath->GetCMinimum();
+
+	if (PlayerTotalScore >= LevelAScoreMinimum)
 	{
 		Result.LevelGrade = EGrade::EGrade_A;
 	}
-	else if (CurrentPlayerLapScore >= LevelBScoreMinimum)
+	else if (PlayerTotalScore >= LevelBScoreMinimum)
 	{
 		Result.LevelGrade = EGrade::EGrade_B;
 	}
-	else if (CurrentPlayerLapScore >= LevelCScoreMinimum)
+	else if (PlayerTotalScore >= LevelCScoreMinimum)
 	{
 		Result.LevelGrade = EGrade::EGrade_C;
 	}
