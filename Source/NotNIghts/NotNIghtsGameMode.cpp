@@ -3,6 +3,8 @@
 #include "NotNIghtsGameMode.h"
 #include "NotNightsGameState.h"
 #include "NotNIghtsCharacter.h"
+#include "NotNightsSave.h"
+#include "Kismet/GameplayStatics.h"
 #include "NotNightsWorldSettings.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -129,6 +131,29 @@ void ANotNIghtsGameMode::EndLevel(bool Success)
 
 	OnSendLevelResults.Broadcast(Result);
 	GetWorldTimerManager().ClearTimer(LapTimerHandle);
+
+	UNotNightsSave* Save = nullptr;
+
+	if (UGameplayStatics::DoesSaveGameExist("NotNights", 0))
+	{
+		Save = Cast<UNotNightsSave>(UGameplayStatics::LoadGameFromSlot("NotNights", 0));
+		TMap<FString, FLevelResult>& MapToScore = Save->MapToScore;
+		auto it = MapToScore.Find(UGameplayStatics::GetCurrentLevelName(GetWorld()));
+		if (it != nullptr)
+		{
+			*it = Result;
+		}
+		else
+		{
+			MapToScore.Emplace(UGameplayStatics::GetCurrentLevelName(GetWorld()), PlayerTotalScore);
+		}
+	}
+	else
+	{
+		Save = Cast<UNotNightsSave>(UGameplayStatics::CreateSaveGameObject(UNotNightsSave::StaticClass()));
+		TMap<FString, FLevelResult>& MapToScore = Save->MapToScore;
+		MapToScore.Emplace(UGameplayStatics::GetCurrentLevelName(GetWorld()), Result);
+	}
 }
 
 float ANotNIghtsGameMode::GetLapTimeRemaining()
