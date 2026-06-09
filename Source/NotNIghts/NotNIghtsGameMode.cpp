@@ -134,11 +134,15 @@ void ANotNIghtsGameMode::EndLevel(bool Success)
 
 	UNotNightsSave* Save = nullptr;
 
+	FString LevelName = UGameplayStatics::GetCurrentLevelName(GetWorld());
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, LevelName);
+
 	if (UGameplayStatics::DoesSaveGameExist("NotNights", 0))
 	{
 		Save = Cast<UNotNightsSave>(UGameplayStatics::LoadGameFromSlot("NotNights", 0));
 		TMap<FString, FLevelResult>& MapToScore = Save->MapToScore;
-		auto it = MapToScore.Find(UGameplayStatics::GetCurrentLevelName(GetWorld()));
+		auto it = MapToScore.Find(LevelName);
 		if (it != nullptr)
 		{
 			*it = Result;
@@ -152,7 +156,8 @@ void ANotNIghtsGameMode::EndLevel(bool Success)
 	{
 		Save = Cast<UNotNightsSave>(UGameplayStatics::CreateSaveGameObject(UNotNightsSave::StaticClass()));
 		TMap<FString, FLevelResult>& MapToScore = Save->MapToScore;
-		MapToScore.Emplace(UGameplayStatics::GetCurrentLevelName(GetWorld()), Result);
+		MapToScore.Emplace(LevelName, Result);
+		UGameplayStatics::SaveGameToSlot(Save, "NotNights", 0);
 	}
 }
 
