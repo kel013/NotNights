@@ -96,6 +96,8 @@ void ARing::SetUpRingObjects()
 
 		RingStaticMeshComponent->RegisterComponent();
 		RingStaticMeshComponent->SetStaticMesh(RingMesh);
+		RingStaticMeshComponent->SetMaterial(0,RingMaterial);
+		RingStaticMeshComponent->SetOverlayMaterial(OverlayMaterial);
 		RingStaticMeshComponent->AttachToComponent(BoxComponent, FAttachmentTransformRules::KeepRelativeTransform);
 		RingStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
