@@ -43,12 +43,17 @@ void ANotNIghtsGameMode::IncrementScore(int Inc)
 	LinkScore += Inc;
 	CurrentPlayerLapScore += LinkScore;
 	OnScoreChanged.Broadcast(CurrentPlayerLapScore);
+	OnScoreAdded.Broadcast(LinkScore);
 };
 
 void ANotNIghtsGameMode::DepositEssentials()
 {
 	EssentialsDeposited += EssentialsCollected; EssentialsCollected = 0;
 	OnEssentialChanged.Broadcast(EssentialsCollected);
+	FEssentialDeposited Deposit;
+	Deposit.Deposited = EssentialsDeposited;
+	Deposit.Needed = EssentialsNeeded;
+	OnEssentialDeposited.Broadcast(Deposit);
 };
 
 void ANotNIghtsGameMode::IncrementEssentials(int Inc)

@@ -42,7 +42,21 @@ public:
 	EGrade LevelGrade;
 };
 
+USTRUCT(BlueprintType)
+struct FEssentialDeposited
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(BlueprintReadWrite)
+	int Deposited;
+	UPROPERTY(BlueprintReadWrite)
+	int Needed;
+
+};
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScoreChanged, int, Score);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScoreAdded, int, Score);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEssentialDeposited, FEssentialDeposited, Deposited);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSendLapResults, FLapResult, Result);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSendLevelResults, FLevelResult, Result);
 UCLASS(minimalapi)
@@ -101,9 +115,13 @@ protected:
 public:
 	UPROPERTY(BlueprintAssignable, Category = "Score")
 	FOnScoreChanged OnScoreChanged;
+	UPROPERTY(BlueprintAssignable, Category = "Score")
+	FOnScoreAdded OnScoreAdded;
 
 	UPROPERTY(BlueprintAssignable, Category = "Score")
 	FOnScoreChanged OnEssentialChanged;
+	UPROPERTY(BlueprintAssignable, Category = "Score")
+	FOnEssentialDeposited OnEssentialDeposited;
 	UPROPERTY(BlueprintAssignable, Category = "Score")
 	FOnSendLapResults OnSendLapResults;
 	UPROPERTY(BlueprintAssignable, Category = "Score")
