@@ -42,14 +42,19 @@ void ANotNIghtsGameMode::IncrementScore(int Inc)
 	GetWorldTimerManager().SetTimer(LinkTimerHandle, this, &ANotNIghtsGameMode::ResetLinkScore, LinkTimeWindow, false);
 	LinkScore += Inc;
 	CurrentPlayerLapScore += LinkScore;
-	OnScoreChanged.Broadcast(CurrentPlayerLapScore);
-	OnScoreAdded.Broadcast(LinkScore);
+	FScoreChange Change;
+	Change.Change = LinkScore;
+	Change.Score = CurrentPlayerLapScore;
+	OnScoreChanged.Broadcast(Change);
 };
 
 void ANotNIghtsGameMode::DepositEssentials()
 {
+	FScoreChange Change;
+	Change.Change = -EssentialsCollected;
 	EssentialsDeposited += EssentialsCollected; EssentialsCollected = 0;
-	OnEssentialChanged.Broadcast(EssentialsCollected);
+	Change.Score = EssentialsCollected;
+	OnEssentialChanged.Broadcast(Change);
 	FEssentialDeposited Deposit;
 	Deposit.Deposited = EssentialsDeposited;
 	Deposit.Needed = EssentialsNeeded;
@@ -59,7 +64,10 @@ void ANotNIghtsGameMode::DepositEssentials()
 void ANotNIghtsGameMode::IncrementEssentials(int Inc)
 {
 	EssentialsCollected += Inc;
-	OnEssentialChanged.Broadcast(EssentialsCollected);
+	FScoreChange Change;
+	Change.Change = Inc;
+	Change.Score = EssentialsCollected;
+	OnEssentialChanged.Broadcast(Change);
 };
 
 void ANotNIghtsGameMode::FinishLap()
@@ -150,7 +158,10 @@ void ANotNIghtsGameMode::EndLevel(bool Success)
 		auto it = MapToScore.Find(LevelName);
 		if (it != nullptr)
 		{
-			*it = Result;
+			if (it->TotalScore < Result.TotalScore)
+			{
+				MapToScore.Add(LevelName, Result);
+			}
 		}
 		else
 		{

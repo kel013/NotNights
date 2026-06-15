@@ -54,8 +54,19 @@ public:
 
 };
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScoreChanged, int, Score);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScoreAdded, int, Score);
+USTRUCT(BlueprintType)
+struct FScoreChange
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(BlueprintReadWrite)
+	int Score;
+	UPROPERTY(BlueprintReadWrite)
+	int Change;
+
+};
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScoreChanged, FScoreChange, Score);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEssentialDeposited, FEssentialDeposited, Deposited);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSendLapResults, FLapResult, Result);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSendLevelResults, FLevelResult, Result);
@@ -115,8 +126,6 @@ protected:
 public:
 	UPROPERTY(BlueprintAssignable, Category = "Score")
 	FOnScoreChanged OnScoreChanged;
-	UPROPERTY(BlueprintAssignable, Category = "Score")
-	FOnScoreAdded OnScoreAdded;
 
 	UPROPERTY(BlueprintAssignable, Category = "Score")
 	FOnScoreChanged OnEssentialChanged;
