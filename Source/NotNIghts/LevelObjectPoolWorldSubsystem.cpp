@@ -2,7 +2,7 @@
 
 
 #include "LevelObjectPoolWorldSubsystem.h"
-
+#include "Deposit.h"
 #include "NotNightsWorldSettings.h"
 #include "Collectible.h"
 
@@ -53,6 +53,10 @@ void ULevelObjectPoolWorldSubsystem::EnableLap(int LapNum)
 {
 	for (AActor* Actor : LapActors[LapNum])
 	{
+		if (Actor->IsA(ADeposit::StaticClass()))
+		{
+			continue;
+		}
 		Actor->SetActorEnableCollision(true);
 		Actor->SetActorHiddenInGame(false);
 		Actor->SetActorTickEnabled(true);
