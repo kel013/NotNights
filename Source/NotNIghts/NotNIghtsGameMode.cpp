@@ -57,7 +57,7 @@ void ANotNIghtsGameMode::DepositEssentials()
 	OnEssentialChanged.Broadcast(Change);
 	FEssentialDeposited Deposit;
 	Deposit.Deposited = EssentialsDeposited;
-	Deposit.Needed = EssentialsNeeded;
+	Deposit.Needed = EssentialsNeeded- EssentialsDeposited;
 	OnEssentialDeposited.Broadcast(Deposit);
 };
 
@@ -165,8 +165,9 @@ void ANotNIghtsGameMode::EndLevel(bool Success)
 		}
 		else
 		{
-			MapToScore.Emplace(UGameplayStatics::GetCurrentLevelName(GetWorld()), PlayerTotalScore);
+			MapToScore.Emplace(LevelName, PlayerTotalScore);
 		}
+		UGameplayStatics::SaveGameToSlot(Save, "NotNights", 0);
 	}
 	else
 	{
