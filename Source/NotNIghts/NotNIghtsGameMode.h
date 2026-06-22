@@ -139,6 +139,7 @@ public:
 	void IncrementScore(int Inc);
 	void DepositEssentials();
 	void IncrementEssentials(int Inc);
+	void SendLapResults();
 	void FinishLap();
 	int GetCurrentLap() { return CurrentLap; };
 	void ToggleLapRequirementsComplete(bool Complete) { LapComplete = Complete; };

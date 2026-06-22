@@ -70,10 +70,10 @@ void ANotNIghtsGameMode::IncrementEssentials(int Inc)
 	OnEssentialChanged.Broadcast(Change);
 };
 
-void ANotNIghtsGameMode::FinishLap()
+void ANotNIghtsGameMode::SendLapResults()
 {
-	FLapResult Result;
-	Result.TotalScore = CurrentPlayerLapScore;
+	FLapResult LapResult;
+	LapResult.TotalScore = CurrentPlayerLapScore;
 
 	LevelAScoreMinimum += CurrentPath->GetAMinimum();
 	LevelBScoreMinimum += CurrentPath->GetBMinimum();
@@ -81,22 +81,27 @@ void ANotNIghtsGameMode::FinishLap()
 
 	if (CurrentPlayerLapScore >= CurrentPath->GetAMinimum())
 	{
-		Result.LapGrade = EGrade::EGrade_A;
+		LapResult.LapGrade = EGrade::EGrade_A;
 	}
 	else if (CurrentPlayerLapScore >= CurrentPath->GetBMinimum())
 	{
-		Result.LapGrade = EGrade::EGrade_B;
+		LapResult.LapGrade = EGrade::EGrade_B;
 	}
 	else if (CurrentPlayerLapScore >= CurrentPath->GetCMinimum())
 	{
-		Result.LapGrade = EGrade::EGrade_C;
+		LapResult.LapGrade = EGrade::EGrade_C;
 	}
 	else
 	{
-		Result.LapGrade = EGrade::EGrade_D;
+		LapResult.LapGrade = EGrade::EGrade_D;
 	}
 
-	OnSendLapResults.Broadcast(Result);
+	OnSendLapResults.Broadcast(LapResult);
+}
+
+void ANotNIghtsGameMode::FinishLap()
+{
+	SendLapResults();
 	PlayerTotalScore += CurrentPlayerLapScore;
 	PlayerLapScores.Add(CurrentPlayerLapScore);
 	CurrentPlayerLapScore = 0;
@@ -116,6 +121,8 @@ void ANotNIghtsGameMode::ResetLapTimer()
 
 void ANotNIghtsGameMode::EndLevel(bool Success)
 {
+	SendLapResults();
+
 	FLevelResult Result;
 	PlayerTotalScore += CurrentPlayerLapScore;
 	Result.TotalScore = PlayerTotalScore;
