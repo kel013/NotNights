@@ -59,9 +59,6 @@ void ALapComplete::OnOverlapLapComplete(UPrimitiveComponent* OverlappedComponent
 			if (Player->GetCurrentLap() + 1 < WorldSetting->GetPathCount())
 			{
 				Player->IncrementLap();
-				SetActorEnableCollision(false);
-				SetActorHiddenInGame(true);
-				SetActorTickEnabled(false);
 				UE_LOG(LogTemplateCharacter, Display, TEXT("Lap '%i'"), Player->GetCurrentLap());
 			}
 			else

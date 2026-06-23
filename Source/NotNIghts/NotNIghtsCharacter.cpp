@@ -361,6 +361,17 @@ bool ANotNIghtsCharacter::SegmentIntersection(const FVector& SegmentStartA, cons
 	const FVector ForwardDirection = SplinePath->GetDirectionAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
 	const FVector SplineLocation = SplinePath->GetLocationAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
 
+	FVector SegmentALocation = (SegmentStartA + SegmentEndA) / 2;
+	FVector SegmentBLocation = (SegmentStartB + SegmentEndB) / 2;
+	const FVector RightDirection = SplinePath->GetRightVectorAtSplineInputKey(CurrentSplineInputKey, ESplineCoordinateSpace::World);
+	double SegmentAProjection = FVector::DotProduct(SegmentALocation - SplineLocation, RightDirection);
+	double SegmentBProjection = FVector::DotProduct(SegmentBLocation - SplineLocation, RightDirection);
+
+	if (abs(SegmentAProjection - SegmentBProjection) > 100)
+	{
+		return false;
+	}
+
 	//Project the segment to the flat "plane" on the spline (maybe use ProjectVectorOnToPlane if we run into issues)
 	FVector SegmentStartA2D;
 
