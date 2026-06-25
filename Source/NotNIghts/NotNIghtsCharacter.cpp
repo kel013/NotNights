@@ -453,7 +453,8 @@ void ANotNIghtsCharacter::GetAllObjectsInLoop(TArray<FVector>& CirclePoints, TAr
 			Radius = Distance;
 		}
 	}
-	DrawDebugSphere(GetWorld(), Center, Radius, 12, FColor::Cyan, false, 1.0f, (uint8)0U, 10.0F);
+	SpawnLoopParticle(Center, Radius);
+	//DrawDebugSphere(GetWorld(), Center, Radius, 12, FColor::Cyan, false, 1.0f, (uint8)0U, 10.0F);
 	TArray<TEnumAsByte < EObjectTypeQuery >>m_objectTypes;
 
 	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), Center, Radius, m_objectTypes, ACollectableBase::StaticClass(), TArray<AActor*>(), out_Actors);
